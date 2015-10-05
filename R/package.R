@@ -7,5 +7,7 @@
 #' @import methods
 #' @import parallel
 #' @import ff
+#' @import Rcpp
 #' @importClassesFrom LinkedMatrix LinkedMatrix
+#' @useDynLib BGData
 NULL

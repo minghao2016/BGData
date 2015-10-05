@@ -29,7 +29,8 @@ Depends:
     ff
 Imports:
     methods,
-    parallel
+    parallel,
+    Rcpp
 Remotes: QuantGen/LinkedMatrix
 Suggests:
     testthat,
@@ -40,4 +41,6 @@ LazyData: true
 Collate:
     'package.R'
     'BGData.R'
+    'RcppExports.R'
     'utils.R'
+LinkingTo: Rcpp
