@@ -511,24 +511,24 @@ simPED<-function(filename,n,p,genoChars=0:2,na.string=NA,propNA=.02,returnGenos=
 }
 
 
+isGzipCompressed<-function(path){
+    substr(path, nchar(path) - 2, nchar(path)) == '.gz'
+}
+
+
 getLineCount<-function(path,header){
-    isGzipCompressed <- substr(path, nchar(path) - 2, nchar(path)) == '.gz'
-    get_line_count(path,header,isGzipCompressed)
+    get_line_count(path,header,isGzipCompressed(path))
 }
 
 
 getFileHeader<-function(path){
-    file<-gzfile(path,open='r')
-    header<-scan(file,nlines=1,what=character(),quiet=TRUE)
-    close(file)
-    return(header)
+    get_file_header(path,isGzipCompressed(path))
 }
 
 
 getColumnCount<-function(path){
     header<-getFileHeader(path)
-    p<-length(header)
-    return(p)
+    length(header)
 }
 
 

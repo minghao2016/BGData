@@ -18,3 +18,15 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// get_file_header
+std::vector<std::string> get_file_header(std::string path, bool is_gzip_compressed);
+RcppExport SEXP BGData_get_file_header(SEXP pathSEXP, SEXP is_gzip_compressedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
+    Rcpp::traits::input_parameter< bool >::type is_gzip_compressed(is_gzip_compressedSEXP);
+    __result = Rcpp::wrap(get_file_header(path, is_gzip_compressed));
+    return __result;
+END_RCPP
+}

@@ -1,1 +1,1 @@
-PKG_LIBS = -lboost_iostreams
+PKG_LIBS = -lboost_iostreams -lboost_regex

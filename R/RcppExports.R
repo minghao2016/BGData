@@ -5,3 +5,7 @@ get_line_count <- function(path, has_header, is_gzip_compressed) {
     .Call('BGData_get_line_count', PACKAGE = 'BGData', path, has_header, is_gzip_compressed)
 }
 
+get_file_header <- function(path, is_gzip_compressed) {
+    .Call('BGData_get_file_header', PACKAGE = 'BGData', path, is_gzip_compressed)
+}
+
