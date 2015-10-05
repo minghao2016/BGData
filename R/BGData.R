@@ -261,25 +261,28 @@ readPED.default<-function(fileIn,header,dataType,class,n=NULL,p=NULL,na.strings=
     colnames(geno)<-mrkNames
 
     # Parse PED file
-    pedFile<-gzfile(fileIn,open='r')
+    parser<-new(switch(
+        class(dataType),
+        'integer'=RawParserInt,
+        'numeric'=RawParserDouble,
+        'character'=RawParserChar
+    ),fileIn,p,nColSkip,na.strings,isGzipCompressed(fileIn))
     if(header){
-        scan(pedFile,nlines=1,what=character(),quiet=TRUE)
+        parser$nextLine()
     }
     for(i in 1:n){
         time<-proc.time()
-        xSkip<-scan(pedFile,n=nColSkip,what=character(),quiet=TRUE)
-        x<-scan(pedFile,n=p,what=dataType,na.strings=na.strings,quiet=TRUE)
-        pheno[i,]<-xSkip
+        parsed<-parser$nextLine()
+        pheno[i,]<-parsed$pheno
         if(class=='matrix'){
-            geno[i,]<-x
+            geno[i,]<-parsed$geno
         }else{
-            geno<-`[<-`(geno,i,1:ncol(geno),index=index,value=x)
+            geno<-`[<-`(geno,i,1:ncol(geno),index=index,value=parsed$geno)
         }
         if(verbose){
             cat('Subject',i,' ',round(proc.time()[3]-time[3],3),'sec/subject.','\n')
         }
     }
-    close(pedFile)
 
     # Add rownames
     rownames(geno)<-pheno[, idCol]

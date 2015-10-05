@@ -10,4 +10,4 @@
 #' @import Rcpp
 #' @importClassesFrom LinkedMatrix LinkedMatrix
 #' @useDynLib BGData
-NULL
+loadModule("mod_BEDMatrix", TRUE)
