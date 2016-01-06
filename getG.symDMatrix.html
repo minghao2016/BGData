@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>getG.symDMatrix. BGData 0.0.0.9000</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">BGData 0.0.0.9000</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html"><i class="icon-home icon-white"></i> Index</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Computes a genomic relationship matrix G=xx' as a
+<code>symDMatrix</code>.</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><div>getG.symDMatrix(X, nChunks&nbsp;=&nbsp;5, chunkSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;T, scaleCol&nbsp;=&nbsp;T, nChunks2&nbsp;=&nbsp;1, folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), scaleG&nbsp;=&nbsp;T)</div></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>X</dt>
+      <dd>matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix</dd>
+      <dt>nChunks</dt>
+      <dd>The number of columns that are processed at a time.</dd>
+      <dt>chunkSize</dt>
+      <dd>The number of columns that are processed at a time.</dd>
+      <dt>centers</dt>
+      <dd>Precomputed centers.</dd>
+      <dt>scales</dt>
+      <dd>Precomputed scales.</dd>
+      <dt>centerCol</dt>
+      <dd>TRUE/FALSE whether columns must be centered before computing
+xx'.</dd>
+      <dt>scaleCol</dt>
+      <dd>TRUE/FALSE whether columns must be scaled before computing 
+xx'.</dd>
+      <dt>nChunks2</dt>
+      <dd>The number of chunks that each chunk is split into for 
+processing in parallel.</dd>
+      <dt>folder</dt>
+      <dd>Folder in which to save the <code>symDMatrix</code>.</dd>
+      <dt>vmode</dt>
+      <dd>vmode of <code>ff</code> objects.</dd>
+      <dt>verbose</dt>
+      <dd>If TRUE more messages are printed.</dd>
+      <dt>saveRData</dt>
+      <dd>Whether to save an RData file to easily reload 
+<code>symDMatrix</code></dd>
+      <dt>mc.cores</dt>
+      <dd>The number of cores (passed to
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+      <dt>scaleG</dt>
+      <dd>TRUE/FALSE whether columns must be scaled before computing xx'.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+A positive semi-definite symmetric numeric matrix.
+</dl></p>
+  
+    </div>
+
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>Offers options for centering and scaling the columns of x before computing 
+xx'.</p>
+  
+    </div>
+      </div>
+  <div class="span4">
+    <!-- <ul>
+      <li>getG.symDMatrix</li>
+    </ul>
+    <ul>
+      
+    </ul> -->
+      
+        
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a href="https://github.com/hadley/staticdocs">staticdocs</a>. Styled with <a href="https://getbootstrap.com/2.0.4/">bootstrap</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>

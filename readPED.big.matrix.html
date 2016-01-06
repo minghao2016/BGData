@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<title>readPED.big.matrix. BGData 0.0.0.9000</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="">
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/highlight.css" rel="stylesheet">
+<link href="css/staticdocs.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  </head>
+
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">BGData 0.0.0.9000</a>
+      <div class="nav">
+        <ul class="nav">
+          <li><a href="index.html"><i class="icon-home icon-white"></i> Index</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <header>
+        
+      </header>
+      
+      <h1>Creates a <code>BGData</code> object from a plaintext PED-like file.</h1>
+
+<div class="row">
+  <div class="span8">
+    <h2>Usage</h2>
+    <pre><div>readPED.big.matrix(fileIn, header, dataType, n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), verbose&nbsp;=&nbsp;FALSE, folderOut&nbsp;=&nbsp;paste("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn)), sep&nbsp;=&nbsp;""))</div></pre>
+    
+    <h2>Arguments</h2>
+    <dl>
+      <dt>fileIn</dt>
+      <dd>The path to the plaintext file.</dd>
+      <dt>header</dt>
+      <dd>If TRUE, the file contains a header.</dd>
+      <dt>dataType</dt>
+      <dd>The coding of genotypes. Use <code>character()</code> for A/C/G/T 
+or <code>integer()</code> for numeric coding.</dd>
+      <dt>n</dt>
+      <dd>The number of individuals.</dd>
+      <dt>p</dt>
+      <dd>The number of markers.</dd>
+      <dt>na.strings</dt>
+      <dd>The character string used in the plaintext file to denote 
+missing value.</dd>
+      <dt>nColSkip</dt>
+      <dd>The number of columns to be skipped to reach the genotype 
+information in the file.</dd>
+      <dt>idCol</dt>
+      <dd>The index of the ID column. If more than one index is given, 
+both columns will be concatenated with "_".</dd>
+      <dt>verbose</dt>
+      <dd>If TRUE, progress updates will be posted.</dd>
+      <dt>folderOut</dt>
+      <dd>The path to the folder where to save the binary files.</dd>
+    </dl>
+    
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+Returns a <code>BGData</code> object.
+</dl></p>
+  
+    </div>
+
+    <div class="Description">
+      <h2>Description</h2>
+
+      <p>Genotypes are stored in a filebacked <code>big.matrix</code> object. 
+<code>readPED.big.matrix</code> creates a folder (see <code>folderOut</code>) that
+contains the binary flat file (named <code>BGData.bin</code>), a descriptor file
+(named <code>BGData.desc</code>), and an external representation of the
+<code>BGData</code> object in <code>BGData.RData</code>. A 
+<code>BGData</code> object can be reloaded using <code>load.BGData</code> 
+(the regular <code>load</code> function will not work unless the
+<code>big.matrix</code> instance is manually attached using
+<code><a href='http://www.inside-r.org/packages/cran/bigmemory/docs/attach.big.matrix'>attach.big.matrix</a></code>).</p>
+  
+    </div>
+      </div>
+  <div class="span4">
+    <!-- <ul>
+      <li>readPED.big.matrix</li>
+    </ul>
+    <ul>
+      
+    </ul> -->
+      
+    <h2>See also</h2>
+    
+<code>BGData</code>
+
+        
+  </div>
+</div>
+      
+      <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+<p>Built by <a href="https://github.com/hadley/staticdocs">staticdocs</a>. Styled with <a href="https://getbootstrap.com/2.0.4/">bootstrap</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>
