@@ -49,7 +49,195 @@
       
       <div class="row">
   <div class="span8">
-    <p>Built by <a href="https://github.com/hadley/staticdocs">staticdocs</a>, managed by <a href="https://travis-ci.org/">Travis CI</a>.</p>
+    <h1>BGData: Memory Mapped Matrices and Data-Structures for Genomic Data for R</h1>
+
+<p><a href="https://travis-ci.org/QuantGen/BGData"><img src="https://travis-ci.org/QuantGen/BGData.svg?branch=master" alt="Travis-CI Build Status"/></a></p>
+
+<p>Genetic data can be very large and holding data in RAM is often not feasible. One approach to overcome this restriction are <a href="http://en.wikipedia.org/wiki/Memory-mapped_file">memory mapped files</a> that store the actual data on the hard drive and only read in smaller chunks when they are needed.</p>
+
+<p>The <a href="http://cran.r-project.org/web/packages/ff/index.html">ff package for R</a> implements memory mapped arrays and provides a very fast implementation of indexing operations, which allows accessing cells of the array almost at the same speed as accessing those cells in a regular matrix object that is held in RAM. However, with <code>ff</code> the array size is limited to the size of an integer; with genomic data we often exceed this.</p>
+
+<p>We therefore developed a new package <a href="https://github.com/QuantGen/LinkedMatrix"><code>LinkedMatrix</code></a> and two new classes <code>RowLinkedMatrix</code> and <code>ColumnLinkedMatrix</code> that combine several matrix-like objects into a data structure that acts like a regular matrix. This package is used to overcome the limitations of <code>ff</code> by linking multiple <code>ff</code> objects together, either by columns (<code>ColumnLinkedMatrix</code>) or by rows (<code>RowLinkedMatrix</code>).</p>
+
+<p>The <code>BGData</code> package contains a data structure <code>BGData</code> that holds genotypes in the <code>@geno</code> slot, phenotypes in the <code>@pheno</code> slot, and additional information in the <code>@map</code> slot. In addition, we have developed several methods that operate on this data structure, for example to compute genomic relationship matrices, etc.</p>
+
+<p><img src="https://docs.google.com/drawings/d/1m2bV3-woWrO9F9_RXxw30FlzUORXzcnaIPJUlxc-MMk/pub?w=739&amp;h=559" alt="Conceptual Diagram"/></p>
+
+<h2>Classes &amp; Methods</h2>
+
+<h3>Class <code>BGData</code></h3>
+
+<p>An S4 class to hold genotype and phenotype data.</p>
+
+<h4>Slots</h4>
+
+<ul>
+<li><code>@geno</code> (<code>RowLinkedMatrix</code>, <code>ColumnLinkedMatrix</code>, <code>ff_matrix</code> or <code>matrix</code>)</li>
+<li><code>@pheno</code> (<code>data.frame</code>)</li>
+<li><code>@map</code> (<code>data.frame</code>)</li>
+</ul>
+
+<h4>Constructor</h4>
+
+<ul>
+<li><code>BGData(geno = geno, [pheno = pheno, map = map])</code> where <code>geno</code> is a <code>RowLinkedMatrix</code>, <code>ColumnLinkedMatrix</code>, <code>ff_matrix</code> or <code>matrix</code>, and optionally, <code>pheno</code> is a <code>data.frame</code> and <code>map</code> is a <code>data.frame</code>.</li>
+</ul>
+
+<h2>Functions</h2>
+
+<ul>
+<li>Both <code>readPED</code> and <code>readPED.matrix</code> create a <code>BGData</code> object from a plaintext file containing the phenotypes and genotypes (individuals in rows, phenotypes in the first few columns, markers in the remaining columns, e.g. the raw format in <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/dataman.shtml">PLINK</a>). <code>readPED</code> stores genotype information in an <code>ff</code>-backed <code>RowLinkedMatrix</code> or <code>ColumnLinkedMatrix</code> (dependending on the value of the <code>linked.by</code> parameter) while <code>readPED.matrix</code> uses a regular matrix.</li>
+<li><code>load.BGData(path)</code> loads an existing <code>BGData</code> object from disk into the R workspace</li>
+<li><code>GWAS(formula, data, method)</code> uses a <code>BGData</code> object to conduct single marker association tests using regression methods such as <code>lm()</code>, <code>glm()</code> or <code>lmer()</code></li>
+<li><code>getG(x)</code> calculates the genomic relationship matrix</li>
+<li><code>summarize(x)</code> calculates frequencies of missing values and alleles</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>BGData is not available on <a href="http://cran.r-project.org/">CRAN</a> yet. However, it can be installed directly from GitHub using the <a href="https://github.com/hadley/devtools">devtools</a> package.</p>
+
+<ol>
+<li>Install <code>devtools</code> package: <code>install.packages(&#39;devtools&#39;)</code></li>
+<li>Load <code>devtools</code> package: <code>library(devtools)</code></li>
+<li>Install <code>BGData</code> package from GitHub: <code>install_github(&#39;QuantGen/BGData&#39;)</code></li>
+<li>Load <code>BGData</code> package: <code>library(BGData)</code></li>
+</ol>
+
+<p>Alternatively, you can download the most recent version as a bundle for <a href="https://github.com/QuantGen/BGData/archive/master.zip">Windows</a> or <a href="https://github.com/QuantGen/BGData/archive/master.tar.gz">Mac OS / Linux</a>.</p>
+
+<h2>Introduction</h2>
+
+<h3>Prerequisites</h3>
+
+<p>The <code>BGData</code> package has to be installed to follow along. The example data used in this introduction was generated from the <code>mice</code> dataset of the <code>BGLR</code> package and serves as an example on how to create a <code>BGData</code> object from a plaintext file. We have uploaded it for convenience and it can be downloaded at <a href="https://github.com/QuantGen/BGData/raw/data/mice.raw.gz">https://github.com/QuantGen/BGData/raw/data/mice.raw.gz</a>, but you can also generate it in the following way:</p>
+
+<pre><code class="R"># Writes genotypes in an ASCII file
+library(BGLR)
+data(mice)
+gzmice &lt;- gzfile(&#39;mice.raw.gz&#39;, &#39;w&#39;)
+write.table(cbind(mice.pheno, mice.X), gzmice, quote=F, row.names=F)
+close(gzmice)
+</code></pre>
+
+<h3>Converting a plaintext file (e.g. in PED format) to a <code>BGData</code> object</h3>
+
+<p>A <code>BGData</code> object can be generated from any plaintext file that stores individuals in rows, phenotypes in the first couple of columns (including an identifier for each individual), and genotypes&mdash;either coded as characters (e.g. <code>A</code>, <code>C</code>, <code>G</code>, <code>T</code>) or numbers (e.g. <code>1</code> for <code>A</code>, <code>2</code> for <code>C</code>, etc.), but preferably as single allele dosage numbers&mdash;in the remaining columns. This structure is intentionally similar to a <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#ped">PED file</a> that further restricts the structure of the phenotype section. The <code>mice</code> dataset that we will use as an example is only PED-like: there are more than six initial columns and the order of the columns is not according to the specification, but the BGData package is flexible enough to read it thanks to the <code>nColSkip</code> and <code>idCol</code> parameters.</p>
+
+<p>A <code>BGData</code> object has three slots: <code>@pheno</code>, <code>@geno</code>, and <code>@map</code>. The phenotypes go into <code>@pheno</code>, the genotypes into <code>@geno</code>, and <code>@map</code> is filled with a placeholder that can be replaced later on.</p>
+
+<pre><code class="R">library(BGData)
+BGData &lt;- readPED(fileIn=&#39;mice.raw.gz&#39;, header=TRUE, dataType=integer(), nColSkip=17, idCol=1)
+str(BGData)
+</code></pre>
+
+<h3>Reloading a <code>BGData</code> object from the filesystem</h3>
+
+<p>The genotypes in a <code>BGData</code> object are backed by an efficient binary representation of the original dataset on the filesystem, a <code>LinkedMatrix</code>. By default <code>readPED</code> stores this representation as files called <code>geno_*.bin</code> in the current working directory in a folder that starts with <code>BGData_</code> followed by the filename without extension. To reload a <code>BGData</code> object from the filesystem, load the accompanying <code>BGData.RData</code> file in that directory using the <code>load.BGData</code> function.</p>
+
+<pre><code class="R">rm(BGData)
+load.BGData(&#39;BGData_mice.ped/BGData.RData&#39;)
+dim(BGData@geno)
+</code></pre>
+
+<p><code>BGData</code> objects can also be loaded using the regular <code>load</code> function, but you have to change your current working directory to the one that contains the file for it to work.</p>
+
+<pre><code class="R">rm(BGData)
+# The working directory must be the one where the binary files (geno_*.bin) are saved.
+setwd(&#39;BGData_mice.ped/&#39;)
+load(&#39;BGData.RData&#39;)
+dim(BGData@geno)
+</code></pre>
+
+<h3>Exploring operators</h3>
+
+<p>A <code>LinkedMatrix</code> object (the datatype of the contents of the <code>@geno</code> slot of a <code>BGData</code> object) behaves like any other matrix, even though its data is stored on the filesystem and is never read into memory in its entirety at a given time. This allows for convenient analysis of large datasets, with seamless integration into the rest of R&#39;s capabilities. Subsetting, replacement, and other functions have been implemented.</p>
+
+<pre><code class="R"># Subsetting
+BGData@geno[1, ]
+BGData@geno[, 1]
+BGData@geno[1:10, ]
+BGData@geno[, 1:10]
+BGData@geno[1, 1]
+
+# Replacement
+BGData@geno[1, 1] &lt;- NA
+
+# Other methods
+dim(BGData@geno)
+nrow(BGData@geno)
+ncol(BGData@geno)
+rownames(BGData@geno)
+colnames(BGData@geno)
+dimnames(BGData@geno)
+
+# Summaries
+rowSums(BGData@geno)
+colSums(BGData@geno)
+rowMeans(BGData@geno)
+colMeans(BGData@geno)
+
+# apply
+countNAs &lt;- apply(X=BGData@geno, MARGIN=2, FUN=function(x) sum(is.na(x)))
+</code></pre>
+
+<h3>Running GWASes with different regression methods</h3>
+
+<p>A data structure for genomic data is useful when defining methods that act on both phenotype and genotype information. We have implemented a <code>GWAS</code> function that supports various regression methods and plotting. The formula takes phenotypes from <code>@pheno</code> and inserts one marker at a time.</p>
+
+<pre><code class="R"># lm (set plot=TRUE to get a Manhattan plot of the p values)
+fmLM &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter, data=BGData, method=&#39;lm&#39;, plot=T)
+
+# glm (set plot=TRUE to get a Manhattan plot of the p values)
+BGData@pheno$GENDER01 &lt;- ifelse(BGData@pheno[, &#39;GENDER&#39;] == &#39;M&#39;, 1, 0)
+fmGLM &lt;- GWAS(formula=GENDER01~Obesity.BMI, data=BGData, method=&#39;glm&#39;, family=&#39;binomial&#39;)
+
+# lmer (set plot=TRUE to get a Manhattan plot of the p values)
+fmLMER &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter+(1|cage), data=BGData, method=&#39;lmer&#39;)
+
+# SKAT (set plot=TRUE to get a Manhattan plot of the p values)
+groups &lt;- ceiling(1:ncol(BGData@geno) / 5)
+fmSKAT &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter, data=BGData, method=&#39;SKAT&#39;, groups=groups)
+</code></pre>
+
+<h3>Adding columns to phenotype data</h3>
+
+<p><code>@pheno</code> is stored as a regular data frame and can be modified. These changes will also be available in functions such as <code>GWAS</code>.</p>
+
+<pre><code class="R">newPheno &lt;- data.frame(SUBJECT.NAME=BGData@pheno$SUBJECT.NAME, NEWCOLUMN=1:nrow(BGData@pheno))
+BGData@pheno &lt;- merge(BGData@pheno, newPheno, by=&#39;SUBJECT.NAME&#39;, sort=FALSE)
+</code></pre>
+
+<h3>Generating the G Matrix</h3>
+
+<pre><code class="R">G &lt;- getG(BGData@geno)
+</code></pre>
+
+<h3>BGData can be used with genotypes in RAM (e.g., using matrix)</h3>
+
+<pre><code class="R">n &lt;- 50
+p &lt;- 100
+X &lt;- matrix(nrow=n, ncol=p, sample(0:2, size=n*p, replace=TRUE))
+colnames(X) &lt;- paste0(&#39;mrk_&#39;, 1:p)
+rownames(X) &lt;- paste0(&#39;id_&#39;, 1:n)
+Y &lt;- data.frame(id=rownames(X), age=rnorm(n), y=rnorm(n))
+MAP &lt;- data.frame(mrk_id=colnames(X))
+
+# Creating a BGData object from objects in RAM
+BGData &lt;- BGData(geno=X, pheno=Y, map=MAP)
+
+# Computing a genomic relationship matrix
+G &lt;- getG(BGData@geno)
+
+# Single-marker regression
+SMR &lt;- GWAS(y~age, data=BGData, method=&#39;lm&#39;, plot=TRUE)
+</code></pre>
+
+<h3>Reading the <code>ff</code> objects in <a href="http://julialang.org/">Julia</a> using <code>mmap_array</code></h3>
+
+<pre><code class="julia">fileIn = open(&quot;geno_1.bin&quot;, &quot;r&quot;)
+X = mmap_array(Int8, (5, 10), fileIn)
+</code></pre>
 
 
     <h2>Help topics</h2>
