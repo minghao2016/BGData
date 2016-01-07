@@ -57,17 +57,18 @@
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a
+<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>verbose</dt>
       <dd>If TRUE more messages are printed.</dd>
       <dt>bufferSize</dt>
       <dd>Represents the number of columns of <code>@geno</code> that are 
 brought into RAM for processing (5000 by default).</dd>
       <dt>nTasks</dt>
-      <dd>Represents the number of parallel tasks each buffer is split
+      <dd>Represents the number of parallel tasks each buffer is split 
 into.</dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
+      <dd>The number of cores (passed to 
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
     </dl>
     

@@ -57,13 +57,15 @@
     <h2>Arguments</h2>
     <dl>
       <dt>x</dt>
-      <dd>matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix.</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a
+<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>y</dt>
-      <dd>vector, matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix. NULL by default.</dd>
+      <dd>vector or matrix-like object. NULL by default.</dd>
       <dt>nChunks</dt>
       <dd>The number of chunks used when X and y are partitioned.</dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+      <dd>The number of cores (passed to
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
     </dl>
     
     <div class="Value">

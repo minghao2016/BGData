@@ -59,15 +59,15 @@
       <dt>X</dt>
       <dd>A matrix.</dd>
       <dt>MARGIN</dt>
-      <dd>The subscripts which the function will be applied over. 1
+      <dd>The subscripts which the function will be applied over. 1 
 indicates rows, 2 indicates columns.</dd>
       <dt>FUN</dt>
       <dd>The function to be applied.</dd>
       <dt>nTasks</dt>
-      <dd>The number of submatrices of <code>X</code> to be processed in
+      <dd>The number of submatrices of <code>X</code> to be processed in 
 parallel.</dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
+      <dd>The number of cores (passed to 
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
       <dt>...</dt>
       <dd>Additional arguments to be passed to <code>apply</code>.</dd>
@@ -76,9 +76,9 @@ parallel.</dd>
     <div class="Description">
       <h2>Description</h2>
 
-      <p>The input matrix <code>X</code> is broken into <code>nTasks</code> chunks and passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>. The number of cores can be configured
-using <code>mc.cores</code>. Uses <code>apply</code> from base internally.</p>
+      <p>The input matrix <code>X</code> is broken into <code>nTasks</code> chunks and passed to 
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>. The number of cores can be configured using
+<code>mc.cores</code>. Uses <code>apply</code> from base internally.</p>
   
     </div>
       </div>

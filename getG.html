@@ -57,11 +57,11 @@
     <h2>Arguments</h2>
     <dl>
       <dt>x</dt>
-      <dd>matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>nChunks</dt>
       <dd>The number of columns that are processed at a time.</dd>
       <dt>scaleCol</dt>
-      <dd>TRUE/FALSE whether columns must be scaled before computing
+      <dd>TRUE/FALSE whether columns must be scaled before computing 
 xx'.</dd>
       <dt>scaleG</dt>
       <dd>TRUE/FALSE whether columns must be scaled before computing xx'.</dd>
@@ -74,11 +74,11 @@ By default, all rows are used.</dd>
       <dd>(integer, boolean or character) Indicates which columns should be 
 used. By default, all columns are used.</dd>
       <dt>i2</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used 
+      <dd>(integer, boolean or character) Indicates which rows should be used
 to divide matrix into blocks.</dd>
       <dt>minVar</dt>
-      <dd>Columns with variance lower than this value will not be used 
-in the computation (only if <code>scaleCol</code> is set).</dd>
+      <dd>Columns with variance lower than this value will not be used in
+the computation (only if <code>scaleCol</code> is set).</dd>
       <dt>nChunks2</dt>
       <dd>The number of chunks that each chunk is split into for 
 processing in parallel.</dd>
@@ -94,9 +94,11 @@ processing in parallel.</dd>
       <dd>File format to save genomic relationship matrix in. Either 
 <code>RData</code> or <code>ff</code>.</dd>
       <dt>saveName</dt>
-      <dd>Name without extension to save genomic relationship matrix with.</dd>
+      <dd>Name without extension to save genomic relationship matrix
+with.</dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+      <dd>The number of cores (passed to
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
     </dl>
     
     <div class="Value">
@@ -111,9 +113,9 @@ A positive semi-definite symmetric numeric matrix.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Offers options for centering and scaling the columns of x before computing
-xx'. If <code>centerCol=FALSE</code>, <code>scaleCol=FALSE</code> and
-<code>scaleG=FALSE</code>, <code>getG</code> produces the same outcome than
+      <p>Offers options for centering and scaling the columns of x before computing 
+xx'. If <code>centerCol=FALSE</code>, <code>scaleCol=FALSE</code> and 
+<code>scaleG=FALSE</code>, <code>getG</code> produces the same outcome than 
 <code>tcrossprod</code>.</p>
   
     </div>

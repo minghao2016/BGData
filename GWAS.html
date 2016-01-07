@@ -47,8 +47,8 @@
         
       </header>
       
-      <h1>Performs single marker regressions using a <code>BGData</code> 
-object.</h1>
+      <h1>Performs single marker regressions using a
+<code><a href='BGData-class.html'>BGData</a></code> object.</h1>
 
 <div class="row">
   <div class="span8">
@@ -61,9 +61,9 @@ object.</h1>
       <dd>A formula (e.g. weight~sex+age) with the response on the 
 left-hand side and predictors (all the covariates except the markers) on 
 the right-hand side. The variables included in the formula must be in the 
-<code>@pheno</code> object of the <code>BGData</code>.</dd>
+<code>@pheno</code> object of the <code><a href='BGData-class.html'>BGData</a></code>.</dd>
       <dt>data</dt>
-      <dd>A <code>BGData</code> object.</dd>
+      <dd>A <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>method</dt>
       <dd>The regression method to be used. Currently, the following 
 methods are implemented: <code><a href='http://www.inside-r.org/r-doc/stats/lm'>lm</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/lmfit'>lm.fit</a></code>, 
@@ -80,10 +80,10 @@ the limits of the vertical axis of the Manhattan plot.</dd>
       <dd>Represents the number of columns of <code>@geno</code> that are 
 brought into RAM for processing (5000 by default).</dd>
       <dt>nTasks</dt>
-      <dd>The number of submatrices of <code>X</code> to be processed in
+      <dd>The number of submatrices of <code>X</code> to be processed in 
 parallel.</dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
+      <dd>The number of cores (passed to 
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
       <dt>...</dt>
       <dd>Optional arguments for chunkedApply and regression method.</dd>
@@ -101,10 +101,10 @@ Returns a matrix with estimates, SE, p-value, etc.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Implements single marker regressions. The regression model includes all the
-covariates specified in the right-hand-side of the <code>formula</code> plus one
-column of <code>@geno</code>, one column at a time. The data from the association
-tests is obtained from a <code>BGData</code> object.</p>
+      <p>Implements single marker regressions. The regression model includes all the 
+covariates specified in the right-hand-side of the <code>formula</code> plus one 
+column of <code>@geno</code>, one column at a time. The data from the association 
+tests is obtained from a <code><a href='BGData-class.html'>BGData</a></code> object.</p>
   
     </div>
       </div>

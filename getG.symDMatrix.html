@@ -47,8 +47,8 @@
         
       </header>
       
-      <h1>Computes a genomic relationship matrix G=xx' as a
-<code>symDMatrix</code>.</h1>
+      <h1>Computes a genomic relationship matrix G=xx' as a 
+<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code>.</h1>
 
 <div class="row">
   <div class="span8">
@@ -58,7 +58,8 @@
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>matrix, ff_matrix, RowLinkedMatrix or ColumnLinkedMatrix</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a
+<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>nChunks</dt>
       <dd>The number of columns that are processed at a time.</dd>
       <dt>chunkSize</dt>
@@ -77,16 +78,17 @@ xx'.</dd>
       <dd>The number of chunks that each chunk is split into for 
 processing in parallel.</dd>
       <dt>folder</dt>
-      <dd>Folder in which to save the <code>symDMatrix</code>.</dd>
+      <dd>Folder in which to save the
+<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code>.</dd>
       <dt>vmode</dt>
       <dd>vmode of <code>ff</code> objects.</dd>
       <dt>verbose</dt>
       <dd>If TRUE more messages are printed.</dd>
       <dt>saveRData</dt>
       <dd>Whether to save an RData file to easily reload 
-<code>symDMatrix</code></dd>
+<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code></dd>
       <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
+      <dd>The number of cores (passed to 
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
       <dt>scaleG</dt>
       <dd>TRUE/FALSE whether columns must be scaled before computing xx'.</dd>
