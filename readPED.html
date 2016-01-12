@@ -47,9 +47,10 @@
         
       </header>
       
-      <h1>Creates a memory-mapped <code><a href='BGData-class.html'>BGData</a></code> object from a
-plaintext raw PED file (generated with <code>--recodeA</code> in PLINK) or a
-PED-like file.</h1>
+      <h1>Creates a <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file
+(generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the
+genotypes in a <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> that contains
+memory-mapped <code>ff</code> nodes.</h1>
 
 <div class="row">
   <div class="span8">
@@ -63,8 +64,8 @@ PED-like file.</h1>
       <dt>header</dt>
       <dd>If TRUE, the file contains a header.</dd>
       <dt>dataType</dt>
-      <dd>The coding of genotypes. Use <code>integer()</code> or 
-<code>double()</code> for numeric coding. Character coding is currently not 
+      <dd>The coding of genotypes. Use <code>integer()</code> or
+<code>double()</code> for numeric coding. Character coding is currently not
 supported: use the <code>--recodeA</code> option of PLINK to convert the PED file
 into a raw file.</dd>
       <dt>n</dt>
@@ -72,40 +73,40 @@ into a raw file.</dd>
       <dt>p</dt>
       <dd>The number of markers.</dd>
       <dt>na.strings</dt>
-      <dd>The character string used in the plaintext file to denote 
+      <dd>The character string used in the plaintext file to denote
 missing value.</dd>
       <dt>nColSkip</dt>
-      <dd>The number of columns to be skipped to reach the genotype 
+      <dd>The number of columns to be skipped to reach the genotype
 information in the file.</dd>
       <dt>idCol</dt>
-      <dd>The index of the ID column. If more than one index is given, 
+      <dd>The index of the ID column. If more than one index is given,
 both columns will be concatenated with "_".</dd>
       <dt>verbose</dt>
       <dd>If TRUE, progress updates will be posted.</dd>
       <dt>nNodes</dt>
       <dd>The number of nodes to create.</dd>
       <dt>linked.by</dt>
-      <dd>If <code>columns</code> a column-linked matrix 
+      <dd>If <code>columns</code> a column-linked matrix
 (<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>) is created,
 if <code>rows</code> a row-linked matrix
 (<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/RowLinkedMatrix-class'>RowLinkedMatrix</a></code>).</dd>
       <dt>folderOut</dt>
       <dd>The path to the folder where to save the binary files.</dd>
       <dt>dimorder</dt>
-      <dd>The physical layout of the underlying <code>ff</code> object of 
+      <dd>The physical layout of the underlying <code>ff</code> object of
 each node.</dd>
     </dl>
     
     <div class="Description">
       <h2>Description</h2>
 
-      <p><code>readPED</code> assumes that the plaintext file (<code>fileIn</code>) contains 
-records of individuals in rows, and phenotypes, covariates and markers in 
-columns. The columns included in the first couple of columns 
-(<code>1:nColSkip</code>) are used to populate the <code>@pheno</code> slot of a 
+      <p><code>readPED</code> assumes that the plaintext file (<code>fileIn</code>) contains
+records of individuals in rows, and phenotypes, covariates and markers in
+columns. The columns included in the first couple of columns
+(<code>1:nColSkip</code>) are used to populate the <code>@pheno</code> slot of a
 <code><a href='BGData-class.html'>BGData</a></code> object, and the remaining columns are
-used to fill the <code>@geno</code> slot. If the first row contains a header 
-(<code>header=TRUE</code>), data in this row is used to determine variables names 
+used to fill the <code>@geno</code> slot. If the first row contains a header
+(<code>header=TRUE</code>), data in this row is used to determine variables names
 for <code>@pheno</code> and marker names for <code>@map</code> and <code>@geno</code>.</p>
   
     </div>
@@ -114,17 +115,23 @@ for <code>@pheno</code> and marker names for <code>@map</code> and <code>@geno</
       <h2>Details</h2>
 
       <p>Genotypes are stored in a <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>
-object, where each node is an <code>ff</code> instance. By default a column-linked 
-(<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>) is used for
+object where each node is an <code>ff</code> instance rather than a single
+<code>ff</code> object. This is because the array size in <code>ff</code> is limited to
+the largest integer which can be represented on the system
+(<code>.Machine$integer.max</code>) and for genetic data this limitation is often
+exceeded. The <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> package makes
+it possible to link several <code>ff</code> files together by columns or by rows
+and treat them similarly to a single matrix. By default a
+<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code> is used for
 <code>@geno</code>, but the user can modify this using the <code>linked.by</code>
-argument. The number of nodes is either specified by the user using the
-<code>nNodes</code> argument or determined internally so that each <code>ff</code> object
-has a number of cells that is smaller than <code>.Machine$integer.max / 1.2</code>
-(the array limit of <code>ff</code>).</p>
+argument. The number of nodes to generate is either specified by the user
+using the <code>nNodes</code> argument or determined internally so that each
+<code>ff</code> object has a number of cells that is smaller than
+<code>.Machine$integer.max / 1.2</code>.</p>
   
-      <p><code>readPED</code> creates a folder (see <code>folderOut</code>) that contains the 
+      <p><code>readPED</code> creates a folder (see <code>folderOut</code>) that contains the
 binary flat files (named <code>geno_*.bin</code>) and an external representation of
-the <code><a href='BGData-class.html'>BGData</a></code> object in <code>BGData.RData</code>. A 
+the <code><a href='BGData-class.html'>BGData</a></code> object in <code>BGData.RData</code>. A
 <code><a href='BGData-class.html'>BGData</a></code> object can be reloaded using
 <code>load.BGData</code> (the regular <code>load</code> function will only work if the
 working directory is set to the path that contains the binary flat files).</p>
@@ -142,8 +149,8 @@ working directory is set to the path that contains the binary flat files).</p>
     <h2>See also</h2>
     
 <code><a href='BGData-class.html'>BGData</a></code>,
-  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>, 
-  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>, 
+  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>,
+  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>,
   <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/RowLinkedMatrix-class'>RowLinkedMatrix</a></code>, <code><a href='http://www.inside-r.org/packages/cran/ff/docs/ff'>ff</a></code>
 
         

@@ -58,15 +58,15 @@ column of a matrix.</h1>
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>A matrix-like object, typically <code>@geno</code> of a 
+      <dd>A matrix-like object, typically <code>@geno</code> of a
 <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>MARGIN</dt>
-      <dd>The subscripts which the function will be applied over. 1 
+      <dd>The subscripts which the function will be applied over. 1
 indicates rows, 2 indicates columns.</dd>
       <dt>FUN</dt>
       <dd>The function to be applied.</dd>
       <dt>bufferSize</dt>
-      <dd>The number of rows or columns of <code>X</code> that are brought 
+      <dd>The number of rows or columns of <code>X</code> that are brought
 into memory for processing.</dd>
       <dt>verbose</dt>
       <dd>Whether to print additional information.</dd>
@@ -77,7 +77,7 @@ into memory for processing.</dd>
     <div class="Description">
       <h2>Description</h2>
 
-      <p><code>chunkedApply</code> uses <code>parallelApply</code> internally, so <code>nTasks</code> 
+      <p><code>chunkedApply</code> uses <code>parallelApply</code> internally, so <code>nTasks</code>
 and <code>mc.cores</code> can be passed as <code>...</code>.</p>
   
     </div>

@@ -47,8 +47,9 @@
         
       </header>
       
-      <h1>Creates a <code><a href='BGData-class.html'>BGData</a></code> object from a plaintext
-PED-like file.</h1>
+      <h1>Creates an <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file
+(generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the
+genotypes in an in-memory <code>matrix</code>.</h1>
 
 <div class="row">
   <div class="span8">
@@ -62,20 +63,20 @@ PED-like file.</h1>
       <dt>header</dt>
       <dd>If TRUE, the file contains a header.</dd>
       <dt>dataType</dt>
-      <dd>The coding of genotypes. Use <code>character()</code> for A/C/G/T 
+      <dd>The coding of genotypes. Use <code>character()</code> for A/C/G/T
 or <code>integer()</code> for numeric coding.</dd>
       <dt>n</dt>
       <dd>The number of individuals.</dd>
       <dt>p</dt>
       <dd>The number of markers.</dd>
       <dt>na.strings</dt>
-      <dd>The character string used in the plaintext file to denote 
+      <dd>The character string used in the plaintext file to denote
 missing value.</dd>
       <dt>nColSkip</dt>
-      <dd>The number of columns to be skipped to reach the genotype 
+      <dd>The number of columns to be skipped to reach the genotype
 information in the file.</dd>
       <dt>idCol</dt>
-      <dd>The index of the ID column. If more than one index is given, 
+      <dd>The index of the ID column. If more than one index is given,
 both columns will be concatenated with "_".</dd>
       <dt>verbose</dt>
       <dd>If TRUE, progress updates will be posted.</dd>
@@ -93,14 +94,23 @@ Returns a <code><a href='BGData-class.html'>BGData</a></code> object.
     <div class="Description">
       <h2>Description</h2>
 
-      <p><code>readPED.matrix</code> assumes that the plaintext file (<code>fileIn</code>) 
-contains records of individuals in rows, and phenotypes, covariates and 
-markers in columns. The columns included in columns <code>1:nColSkip</code> are 
+      <p><code>readPED.matrix</code> assumes that the plaintext file (<code>fileIn</code>)
+contains records of individuals in rows, and phenotypes, covariates and
+markers in columns. The columns included in columns <code>1:nColSkip</code> are
 used to populate the slot <code>@pheno</code> of a
 <code><a href='BGData-class.html'>BGData</a></code> object, and the remaining columns are
 used to fill the slot <code>@geno</code>. If the first row contains a header
 (<code>header=TRUE</code>), data in this row is used to determine variables names
 for <code>@pheno</code> and marker names for <code>@map</code> and <code>@geno</code>.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>Genotypes are stored in a regular <code>matrix</code> object. Therefore, this
+function will only work if the raw PED file is small enough to fit into
+memory.</p>
   
     </div>
       </div>

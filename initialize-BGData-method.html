@@ -58,23 +58,30 @@
     <dl>
       <dt>.Object</dt>
       <dd>The <code><a href='BGData-class.html'>BGData</a></code> instance to be
-initialized.</dd>
+initialized. This argument is passed in by R and can be ignored, but still
+needs to be documented.</dd>
       <dt>geno</dt>
-      <dd>A <code>geno</code> object that contains genotypes.</dd>
+      <dd>A <code>geno</code> object that contains genotypes. <code>geno</code> is a
+class union of several matrix-like objects, many of them suitable for very
+large datasets. Currently supported are
+<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>, <code>BEDMatrix</code>,
+<code><a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>big.matrix</a></code>, <code>ff_matrix</code>, and
+<code>matrix</code>.</dd>
       <dt>pheno</dt>
       <dd>A <code><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></code> that contains phenotypes. A stub that
-only contains an <code>IID</code> column populated with the rownames of 
+only contains an <code>IID</code> column populated with the rownames of
 <code>@geno</code> will be generated if missing.</dd>
       <dt>map</dt>
-      <dd>A <code><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></code> that contains a genetic map. A stub 
-that only contains a <code>mrk</code> column populated with the colnames of 
+      <dd>A <code><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></code> that contains a genetic map. A stub
+that only contains a <code>mrk</code> column populated with the colnames of
 <code>@geno</code> will be generated if missing.</dd>
     </dl>
     
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Creates a new <code><a href='BGData-class.html'>BGData</a></code> instance.</p>
+      <p>This method is run when a <code><a href='BGData-class.html'>BGData</a></code> object is
+created using <code>BGData(...)</code> or <code>new("BGData",...)</code>.</p>
   
     </div>
       </div>

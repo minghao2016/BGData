@@ -47,7 +47,7 @@
         
       </header>
       
-      <h1>Convert a <code>BEDMatrix</code> object into a <code><a href='BGData-class.html'>BGData</a></code>
+      <h1>Converts a <code>BEDMatrix</code> object to a <code><a href='BGData-class.html'>BGData</a></code>
 object.</h1>
 
 <div class="row">
@@ -60,8 +60,9 @@ object.</h1>
       <dt>x</dt>
       <dd>A <code>BEDMatrix</code> object.</dd>
       <dt>alternatePhenotypeFile</dt>
-      <dd>Path to an alternate phenotype file (see PLINK 
-documentation).</dd>
+      <dd>Path to an
+<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate
+ phenotype file</a>.</dd>
       <dt>...</dt>
       <dd>Additional arguments to the <code>BEDMatrix</code> constructor
 (currently unused).</dd>
@@ -79,8 +80,23 @@ A <code><a href='BGData-class.html'>BGData</a></code> object.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Convert a <code>BEDMatrix</code> object into a <code><a href='BGData-class.html'>BGData</a></code>
-object.</p>
+      <p>If a FAM file (which corresponds to the first six columns of a PED file) of
+the same name and in the same directory as the BED file exists, the
+<code>@pheno</code> slot will be populated with the data stored in that file.
+Otherwise a stub that only contains an <code>IID</code> column populated with the
+rownames of <code>@geno</code> will be generated.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>PED only allows for a single phenotype. If more phenotypes are required it is
+possible to store them in an
+<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate
+phenotype file</a>. The path to such a file can be provided with
+<code>alternatePhenotypeFile</code> and will be merged with the data in the
+<code>@pheno</code> slot.</p>
   
     </div>
       </div>

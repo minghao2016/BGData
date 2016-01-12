@@ -47,7 +47,7 @@
         
       </header>
       
-      <h1>An S4 class to represent GWAS data.</h1>
+      <h1>An S4 class to represent phenotype and genotype data.</h1>
 
 <div class="row">
   <div class="span8">
@@ -55,7 +55,39 @@
     <div class="Description">
       <h2>Description</h2>
 
-      <p>An S4 class to represent GWAS data.</p>
+      <p>This class is inspired by the phenotype/genotype file format PED and its
+binary companion (also known as BED) of
+<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/'>PLINK</a>. It is used by
+several functions of this package such as <code><a href='GWAS.html'>GWAS</a></code> for performing a
+Genome Wide Association Study or <code><a href='getG.html'>getG</a></code> for calculating a genomic
+relationship matrix.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>There are several ways to create an instance of this class:  <ol>
+<li> from a raw PED file (or a PED-like file) using <code><a href='readPED.html'>readPED</a></code>,
+<code><a href='readPED.matrix.html'>readPED.matrix</a></code>, or <code><a href='readPED.big.matrix.html'>readPED.big.matrix</a></code>. </li>
+<li> from
+a BED file using <code><a href='as.BGData.BEDMatrix.html'>as.BGData</a></code>. </li>
+<li> from
+arbitrary phenotype/genotype data using one of the constructors
+<code>BGData(...)</code> or <code>new("BGData",...)</code>. </li>
+<li> from a previously saved
+<code>BGData</code> object using <code><a href='load.BGData.html'>load.BGData</a></code>. </li>
+<li> from multiple
+files (even a mixture of different file types) using
+<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> </li>
+</ol></p>
+  
+      <p>A PED file can be recoded to a raw PED in
+<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/'>PLINK</a> using <code>plink
+--file myfile --recodeA</code>, or converted to a BED file using <code>plink --file
+myfile --make-bed</code>. Conversely, a BED file can be transformed back to a PED
+file using <code>plink --bfile myfile --recode</code> or to a raw PED file using
+<code>plink --bfile myfile --recodeA</code> without losing information.</p>
   
     </div>
 
@@ -65,7 +97,12 @@
       <p></p>
   
       <p><dl>
-<dt><code>geno</code></dt><dd>A <code>geno</code> object that contains genotypes.</dd></p>
+<dt><code>geno</code></dt><dd>A <code>geno</code> object that contains genotypes. <code>geno</code> is a
+class union of several matrix-like objects, many of them suitable for very
+large datasets. Currently supported are
+<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>, <code>BEDMatrix</code>,
+<code><a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>big.matrix</a></code>, <code>ff_matrix</code>, and
+<code>matrix</code>.</dd></p>
   
       <p><dt><code>pheno</code></dt><dd>A <code><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></code> that contains phenotypes.</dd></p>
   
