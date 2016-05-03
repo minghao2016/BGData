@@ -53,7 +53,7 @@ creating a <code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG.symDMatrix(X, nChunks&nbsp;=&nbsp;5, chunkSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;T, scaleCol&nbsp;=&nbsp;T, nChunks2&nbsp;=&nbsp;1, folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), scaleG&nbsp;=&nbsp;T)</div></pre>
+    <pre><div>getG.symDMatrix(X, nChunks&nbsp;=&nbsp;5, chunkSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, nChunks2&nbsp;=&nbsp;parallel::detectCores(), folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)))</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -74,6 +74,8 @@ xx'.</dd>
       <dt>scaleCol</dt>
       <dd>TRUE/FALSE whether columns must be scaled before computing
 xx'.</dd>
+      <dt>scaleG</dt>
+      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
       <dt>nChunks2</dt>
       <dd>The number of chunks that each chunk is split into for
 processing in parallel.</dd>
@@ -90,8 +92,12 @@ processing in parallel.</dd>
       <dt>mc.cores</dt>
       <dd>The number of cores (passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
-      <dt>scaleG</dt>
-      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
+      <dt>i</dt>
+      <dd>(integer, boolean or character) Indicates which rows should be used.
+By default, all rows are used.</dd>
+      <dt>j</dt>
+      <dd>(integer, boolean or character) Indicates which columns should be
+used. By default, all columns are used.</dd>
     </dl>
     
     <div class="Value">

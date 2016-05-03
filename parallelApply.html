@@ -78,7 +78,23 @@ parallel.</dd>
 
       <p>The input matrix <code>X</code> is broken into <code>nTasks</code> chunks and passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>. The number of cores can be configured using
-<code>mc.cores</code>. Uses <code>apply</code> from base internally.</p>
+<code>mc.cores</code>.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p><code>nTasks</code> has to be chosen carefully to avoid running out of memory. As a
+rule of thumb, at least around <code>object_size(X) + (mc.cores *
+(object_size(X) / nTasks)) + object_size(result)</code> MB of total memory will be
+needed, not including potential copies of your data that might be created
+(for example <code>lsfit</code> runs <code>cbind(1, X)</code>). Therefore, for 20 nodes
+and 20 tasks you will need at least <code>2 * object_size(X)</code> MB, for 20
+nodes and 40 tasks <code>1.5 * object_size(X)</code> MB, etc.</p>
+  
+      <p>If <code>nTasks</code> equals 1, the regular <code>apply</code> function will be called
+to preserve memory.</p>
   
     </div>
       </div>

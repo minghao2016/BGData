@@ -103,7 +103,7 @@ each node.</dd>
       <p><code>readPED</code> assumes that the plaintext file (<code>fileIn</code>) contains
 records of individuals in rows, and phenotypes, covariates and markers in
 columns. The columns included in the first couple of columns
-(<code>1:nColSkip</code>) are used to populate the <code>@pheno</code> slot of a
+(<code>seq_len(nColSkip)</code>) are used to populate the <code>@pheno</code> slot of a
 <code><a href='BGData-class.html'>BGData</a></code> object, and the remaining columns are
 used to fill the <code>@geno</code> slot. If the first row contains a header
 (<code>header=TRUE</code>), data in this row is used to determine variables names

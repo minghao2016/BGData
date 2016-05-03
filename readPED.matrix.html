@@ -96,8 +96,8 @@ Returns a <code><a href='BGData-class.html'>BGData</a></code> object.
 
       <p><code>readPED.matrix</code> assumes that the plaintext file (<code>fileIn</code>)
 contains records of individuals in rows, and phenotypes, covariates and
-markers in columns. The columns included in columns <code>1:nColSkip</code> are
-used to populate the slot <code>@pheno</code> of a
+markers in columns. The columns included in columns <code>seq_len(nColSkip)</code>
+are used to populate the slot <code>@pheno</code> of a
 <code><a href='BGData-class.html'>BGData</a></code> object, and the remaining columns are
 used to fill the slot <code>@geno</code>. If the first row contains a header
 (<code>header=TRUE</code>), data in this row is used to determine variables names

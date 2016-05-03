@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG(x, nChunks&nbsp;=&nbsp;ceiling(ncol(x)/10000), scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, verbose&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;1:nrow(x), j&nbsp;=&nbsp;1:ncol(x), i2&nbsp;=&nbsp;NULL, minVar&nbsp;=&nbsp;1e-05, nChunks2&nbsp;=&nbsp;parallel::detectCores(), scales&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, impute&nbsp;=&nbsp;TRUE, saveG&nbsp;=&nbsp;FALSE, saveType&nbsp;=&nbsp;"RData", saveName&nbsp;=&nbsp;"Gij", mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>getG(x, nChunks&nbsp;=&nbsp;ceiling(ncol(x)/10000), scaleCol&nbsp;=&nbsp;TRUE, centerCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, verbose&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(x)), j&nbsp;=&nbsp;seq_len(ncol(x)), i2&nbsp;=&nbsp;NULL, minVar&nbsp;=&nbsp;1e-05, nChunks2&nbsp;=&nbsp;parallel::detectCores(), scales&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, saveG&nbsp;=&nbsp;FALSE, saveType&nbsp;=&nbsp;"RData", saveName&nbsp;=&nbsp;"Gij", mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -63,6 +63,9 @@
       <dd>The number of columns that are processed at a time.</dd>
       <dt>scaleCol</dt>
       <dd>TRUE/FALSE whether columns must be scaled before computing
+xx'.</dd>
+      <dt>centerCol</dt>
+      <dd>TRUE/FALSE whether columns must be centered before computing
 xx'.</dd>
       <dt>scaleG</dt>
       <dd>TRUE/FALSE whether xx' must be scaled.</dd>
@@ -87,8 +90,6 @@ processing in parallel.</dd>
       <dd>Precomputed scales if i2 is used.</dd>
       <dt>centers</dt>
       <dd>Precomputed centers if i2 is used.</dd>
-      <dt>impute</dt>
-      <dd>Whether to impute data if i2 is used.</dd>
       <dt>saveG</dt>
       <dd>Whether to save genomic relationship matrix into file.</dd>
       <dt>saveType</dt>
