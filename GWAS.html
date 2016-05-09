@@ -53,7 +53,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>GWAS(formula, data, method, plot&nbsp;=&nbsp;FALSE, verbose&nbsp;=&nbsp;FALSE, min.pValue&nbsp;=&nbsp;1e-10, chunkSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
+    <pre><div>GWAS(formula, data, method, i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), verbose&nbsp;=&nbsp;FALSE, chunkSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -68,14 +68,14 @@ the right-hand side. The variables included in the formula must be in the
       <dd>The regression method to be used. Currently, the following
 methods are implemented: <code><a href='http://www.inside-r.org/r-doc/stats/lm'>lm</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/lmfit'>lm.fit</a></code>,
 <code><a href='http://www.inside-r.org/r-doc/stats/lsfit'>lsfit</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/glm'>glm</a></code> and <code><a href='http://www.inside-r.org/packages/cran/lme4/docs/lmer'>lmer</a></code>.</dd>
-      <dt>plot</dt>
-      <dd>If TRUE a Manhattan plot is produced and filled with points as
-the association tests are run.</dd>
+      <dt>i</dt>
+      <dd>(integer, boolean or character) Indicates which rows should be used.
+By default, all rows are used.</dd>
+      <dt>j</dt>
+      <dd>(integer, boolean or character) Indicates which columns should be
+used. By default, all columns are used.</dd>
       <dt>verbose</dt>
       <dd>If TRUE more messages are printed.</dd>
-      <dt>min.pValue</dt>
-      <dd>Numeric, the minimum p-value expected, used to determine
-the limits of the vertical axis of the Manhattan plot.</dd>
       <dt>chunkSize</dt>
       <dd>Represents the number of columns of <code>@geno</code> that are
 brought into RAM for processing (5000 by default).</dd>
