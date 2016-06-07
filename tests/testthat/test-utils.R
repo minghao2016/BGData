@@ -223,9 +223,9 @@ for (nCores in seq_len(2)) {
         for (bufferSize in c(3, 6)) {
             for (nTasks in c(1, 3)) {
                 expect_equal(summarize(genotypes, bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores), computeDummy())
-                expect_equal(summarize(genotypes, bufferSize = bufferSize, i = c(1, 3), nTasks = nTasks, mc.cores = nCores), computeDummy(i = c(1, 3)))
-                expect_equal(summarize(genotypes, bufferSize = bufferSize, j = c(1, 3, 5), nTasks = nTasks, mc.cores = nCores), computeDummy(j =  c(1, 3, 5)))
-                expect_equal(summarize(genotypes, bufferSize = bufferSize, i = c(1, 3), j = c(1, 3, 5), nTasks = nTasks, mc.cores = nCores), computeDummy(i = c(1, 3), j = c(1, 3, 5)))
+                expect_equal(summarize(genotypes, i = c(1, 3), bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores), computeDummy(i = c(1, 3)))
+                expect_equal(summarize(genotypes, j = c(1, 3, 5), bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores), computeDummy(j =  c(1, 3, 5)))
+                expect_equal(summarize(genotypes, i = c(1, 3), j = c(1, 3, 5), bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores), computeDummy(i = c(1, 3), j = c(1, 3, 5)))
                 expect_equal(summarize(genotypes, mc.cores = nCores), computeDummy())
             }
         }

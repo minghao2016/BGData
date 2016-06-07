@@ -4,17 +4,12 @@
 \alias{summarize}
 \title{Calculates frequencies of missing values and alleles.}
 \usage{
-summarize(X, verbose = FALSE, bufferSize = 5000, i = seq_len(nrow(X)),
-  j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1)
+summarize(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
+  bufferSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
 \code{\link[=BGData-class]{BGData}} object.}
-
-\item{verbose}{If TRUE more messages are printed.}
-
-\item{bufferSize}{Represents the number of columns of \code{@geno} that are
-brought into RAM for processing (5000 by default).}
 
 \item{i}{(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.}
@@ -22,11 +17,16 @@ By default, all rows are used.}
 \item{j}{(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.}
 
+\item{bufferSize}{Represents the number of columns of \code{@geno} that are
+brought into RAM for processing (5000 by default).}
+
 \item{nTasks}{Represents the number of parallel tasks each buffer is split
 into.}
 
 \item{mc.cores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
+
+\item{verbose}{If TRUE more messages are printed.}
 }
 \description{
 Calculates frequencies of missing values and alleles.

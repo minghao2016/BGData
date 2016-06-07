@@ -864,19 +864,19 @@ getCoefficients.lmerMod <- function(x) {
 #'
 #' @param X A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param verbose If TRUE more messages are printed.
-#' @param bufferSize Represents the number of columns of \code{@@geno} that are
-#'   brought into RAM for processing (5000 by default).
 #' @param i (integer, boolean or character) Indicates which rows should be used.
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
+#' @param bufferSize Represents the number of columns of \code{@@geno} that are
+#'   brought into RAM for processing (5000 by default).
 #' @param nTasks Represents the number of parallel tasks each buffer is split
 #'   into.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
+#' @param verbose If TRUE more messages are printed.
 #' @export
-summarize <- function(X, verbose = FALSE, bufferSize = 5000, i = seq_len(nrow(X)), j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1) {
+summarize <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE) {
     res <- chunkedApply(X = X, MARGIN = 2, FUN = function(col) {
         freqNA <- mean(is.na(col))
         alleleFreq <- mean(col, na.rm = TRUE) / 2
