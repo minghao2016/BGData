@@ -283,15 +283,15 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'   used. By default, all columns are used.
 #' @param i2 (integer, boolean or character) Indicates which rows should be used
 #'   to divide matrix into blocks.
-#' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
-#'   xx'.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
 #'   xx'.
+#' @param centers Precomputed centers if i2 is used.
+#' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
+#'   xx'.
+#' @param scales Precomputed scales if i2 is used.
 #' @param scaleG TRUE/FALSE whether xx' must be scaled.
 #' @param minVar Columns with variance lower than this value will not be used in
 #'   the computation (only if \code{scaleCol} is set).
-#' @param scales Precomputed scales if i2 is used.
-#' @param centers Precomputed centers if i2 is used.
 #' @param saveG Whether to save genomic relationship matrix into file.
 #' @param saveType File format to save genomic relationship matrix in. Either
 #'   \code{RData} or \code{ff}.
@@ -305,12 +305,12 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, minVar = 1e-05, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     if (is.null(i2)) {
         G <- getGi(x = x, i = i, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, j = j, centerCol = centerCol, centers = centers, scaleCol = scaleCol, scales = scales, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -325,7 +325,7 @@ getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, scale
 }
 
 
-getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), centerCol = FALSE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -426,7 +426,7 @@ getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), scales = NULL, 
 }
 
 
-getGij <- function(x, i1, i2, j = seq_len(ncol(x)), scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, scaleCol = TRUE, scales, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -536,12 +536,12 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), scales, centers, scaleCol = 
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param centers Precomputed centers.
-#' @param scales Precomputed scales.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
 #'   xx'.
+#' @param centers Precomputed centers.
 #' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
 #'   xx'.
+#' @param scales Precomputed scales.
 #' @param scaleG TRUE/FALSE whether xx' must be scaled.
 #' @param folder Folder in which to save the
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}.
@@ -557,7 +557,7 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), scales, centers, scaleCol = 
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, folder = randomString(), vmode = "double", saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, folder = randomString(), vmode = "double", saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 

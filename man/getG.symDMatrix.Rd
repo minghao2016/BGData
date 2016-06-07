@@ -6,7 +6,7 @@
 creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 \usage{
 getG.symDMatrix(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
-  centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE,
+  centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL,
   scaleG = TRUE, folder = randomString(), vmode = "double",
   saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores,
   mc.cores = 1, verbose = TRUE)
@@ -21,15 +21,15 @@ By default, all rows are used.}
 \item{j}{(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.}
 
-\item{centers}{Precomputed centers.}
-
-\item{scales}{Precomputed scales.}
-
 \item{centerCol}{TRUE/FALSE whether columns must be centered before computing
 xx'.}
 
+\item{centers}{Precomputed centers.}
+
 \item{scaleCol}{TRUE/FALSE whether columns must be scaled before computing
 xx'.}
+
+\item{scales}{Precomputed scales.}
 
 \item{scaleG}{TRUE/FALSE whether xx' must be scaled.}
 
