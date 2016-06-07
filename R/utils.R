@@ -765,11 +765,11 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
         }
         pheno <- data@pheno
         GWAS.model <- update(as.formula(formula), ".~z+.")
-        OUT <- chunkedApply(data@geno, 2, i = i, j = j, function(col, ...) {
+        OUT <- chunkedApply(X = data@geno, MARGIN = 2, FUN = function(col, ...) {
             pheno$z <- col
             fm <- FUN(GWAS.model, data = pheno, ...)
             getCoefficients(fm)
-        }, bufferSize = chunkSize, verbose = verbose, nTasks = nTasks, mc.cores = mc.cores, ...)
+        }, bufferSize = chunkSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
         colnames(OUT) <- colnames(data@geno)[j]
         OUT <- t(OUT)
     }
@@ -792,11 +792,11 @@ GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(nc
 
     y <- data@pheno[i, as.character(terms(formula)[[2]]), drop = TRUE]
 
-    res <- chunkedApply(data@geno, 2, i = i, j = j, function(col, ...) {
+    res <- chunkedApply(X = data@geno, MARGIN = 2, FUN = function(col, ...) {
         model[, 1] <- col
         fm <- lsfit(x = model, y = y, intercept = FALSE)
         ls.print(fm, print.it = FALSE)$coef.table[[1]][1, ]
-    }, bufferSize = chunkSize, verbose = verbose, nTasks = nTasks, mc.cores = mc.cores, ...)
+    }, bufferSize = chunkSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
     colnames(res) <- colnames(data@geno)[j]
     res <- t(res)
 
@@ -877,12 +877,12 @@ getCoefficients.lmerMod <- function(x) {
 #'   \code{\link[parallel]{mclapply}}).
 #' @export
 summarize <- function(X, verbose = FALSE, bufferSize = 5000, i = seq_len(nrow(X)), j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1) {
-    res <- chunkedApply(X, 2, function(col) {
+    res <- chunkedApply(X = X, MARGIN = 2, FUN = function(col) {
         freqNA <- mean(is.na(col))
         alleleFreq <- mean(col, na.rm = TRUE) / 2
         sd <- sd(col, na.rm = TRUE)
         cbind(freqNA, alleleFreq, sd)
-    }, bufferSize = bufferSize, verbose = verbose, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores)
+    }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     rownames(res) <- c("freq_na", "allele_freq", "sd")
     colnames(res) <- colnames(X)
     t(res)
