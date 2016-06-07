@@ -728,17 +728,17 @@ getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, sc
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param verbose If TRUE more messages are printed.
 #' @param chunkSize Represents the number of columns of \code{@@geno} that are
 #'   brought into RAM for processing (5000 by default).
 #' @param nTasks The number of submatrices of \code{X} to be processed in
 #'   parallel.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
+#' @param verbose If TRUE more messages are printed.
 #' @param ... Additional arguments for chunkedApply and regression method.
 #' @return Returns a matrix with estimates, SE, p-value, etc.
 #' @export
-GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), verbose = FALSE, chunkSize = 5000, nTasks = mc.cores, mc.cores = 1, ...) {
+GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), chunkSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     if (class(data) != "BGData") {
         stop("data must BGData")
@@ -783,7 +783,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
 # y~1 or y~factor(sex)+age
 # all the variables in the formula must be in data@pheno data (BGData)
 # containing slots @pheno and @geno
-GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), verbose = FALSE, chunkSize = 10, nTasks = mc.cores, mc.cores = 1, ...) {
+GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), chunkSize = 10, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     # subset of model.frame has bizarre scoping issues
     frame <- model.frame(formula = formula, data = data@pheno)[i, , drop = FALSE]
