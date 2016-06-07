@@ -6,7 +6,8 @@
 function on each row or column of a matrix in parallel.}
 \usage{
 chunkedApply(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
-  bufferSize, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...)
+  bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
@@ -24,7 +25,13 @@ By default, all rows are used.}
 used. By default, all columns are used.}
 
 \item{bufferSize}{The number of rows or columns of \code{X} that are brought
-into memory for processing.}
+into RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\code{NULL}, all elements in \code{i} or \code{j} are used.}
+
+\item{nBuffers}{The number of partitions of the rows or columns of \code{X}
+that are brought into RAM for processing. Is overwritten by
+\code{bufferSize}. If both parameters are \code{NULL}, all elements in
+\code{i} or \code{j} are used.}
 
 \item{nTasks}{The number of submatrices of each buffered subset of \code{X}
 to be processed in parallel.}

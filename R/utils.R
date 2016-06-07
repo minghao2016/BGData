@@ -147,7 +147,12 @@ parallelApply <- function(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...) 
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
 #' @param bufferSize The number of rows or columns of \code{X} that are brought
-#'   into memory for processing.
+#'   into RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#'   \code{NULL}, all elements in \code{i} or \code{j} are used.
+#' @param nBuffers The number of partitions of the rows or columns of \code{X}
+#'   that are brought into RAM for processing. Is overwritten by
+#'   \code{bufferSize}. If both parameters are \code{NULL}, all elements in
+#'   \code{i} or \code{j} are used.
 #' @param nTasks The number of submatrices of each buffered subset of \code{X}
 #'   to be processed in parallel.
 #' @param mc.cores The number of cores (passed to
@@ -155,16 +160,23 @@ parallelApply <- function(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...) 
 #' @param verbose Whether to print additional information.
 #' @param ... Additional arguments to be passed to \code{parallelApply}.
 #' @export
-chunkedApply <- function(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+chunkedApply <- function(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
     if (!length(dim(X))) {
         stop("dim(X) must have a positive length")
     }
     d <- c(length(i), length(j))
-    nChunks <- ceiling(d[MARGIN] / bufferSize)
-    ranges <- LinkedMatrix:::chunkRanges(d[MARGIN], nChunks)
-    res <- lapply(seq_len(nChunks), function(k) {
+    if (is.null(bufferSize) && is.null(nBuffers)) {
+        bufferSize <- d[MARGIN]
+        nBuffers <- 1
+    } else if (is.null(bufferSize) && !is.null(nBuffers)) {
+        bufferSize <- ceiling(d[MARGIN] / nBuffers)
+    } else {
+        nBuffers <- ceiling(d[MARGIN] / bufferSize)
+    }
+    ranges <- LinkedMatrix:::chunkRanges(d[MARGIN], nBuffers)
+    res <- lapply(seq_len(nBuffers), function(k) {
         if (verbose) {
-            message("Processing chunk ", k, " of ", nChunks, " (", round(k / nChunks * 100, 3), "%) ...")
+            message("Processing chunk ", k, " of ", nBuffers, " (", round(k / nBuffers * 100, 3), "%) ...")
         }
         if (MARGIN == 2) {
             subset <- X[i, j[seq(ranges[1, k], ranges[2, k])], drop = FALSE]
@@ -728,8 +740,12 @@ getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), cente
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param bufferSize Represents the number of columns of \code{@@geno} that are
-#'   brought into RAM for processing (5000 by default).
+#' @param bufferSize The number of columns of \code{data} that are brought into
+#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#'   \code{NULL}, all elements in \code{j} are used.
+#' @param nBuffers The number of partitions of the columns of \code{data} that
+#'   are brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+#'   both parameters are \code{NULL}, all elements in \code{j} are used.
 #' @param nTasks The number of submatrices of \code{X} to be processed in
 #'   parallel.
 #' @param mc.cores The number of cores (passed to
@@ -738,7 +754,7 @@ getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), cente
 #' @param ... Additional arguments for chunkedApply and regression method.
 #' @return Returns a matrix with estimates, SE, p-value, etc.
 #' @export
-GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     if (class(data) != "BGData") {
         stop("data must BGData")
@@ -751,7 +767,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
     # We can have specialized methods, for instance for OLS it is better to use
     # lsfit (that is what GWAS.ols does)
     if (method %in% c("lm", "lm.fit", "lsfit")) {
-        OUT <- GWAS.ols(formula = formula, data = data, i = i, j = j, verbose = verbose, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, ...)
+        OUT <- GWAS.ols(formula = formula, data = data, i = i, j = j, verbose = verbose, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, ...)
     } else if (method == "SKAT") {
         OUT <- GWAS.SKAT(formula = formula, data = data, i = i, j = j, verbose = verbose, ...)
     } else {
@@ -769,7 +785,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
             pheno$z <- col
             fm <- FUN(GWAS.model, data = pheno, ...)
             getCoefficients(fm)
-        }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+        }, i = i, j = j, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
         colnames(OUT) <- colnames(data@geno)[j]
         OUT <- t(OUT)
     }
@@ -783,7 +799,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
 # y~1 or y~factor(sex)+age
 # all the variables in the formula must be in data@pheno data (BGData)
 # containing slots @pheno and @geno
-GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = 10, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     # subset of model.frame has bizarre scoping issues
     frame <- model.frame(formula = formula, data = data@pheno)[i, , drop = FALSE]
@@ -796,7 +812,7 @@ GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(nc
         model[, 1] <- col
         fm <- lsfit(x = model, y = y, intercept = FALSE)
         ls.print(fm, print.it = FALSE)$coef.table[[1]][1, ]
-    }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+    }, i = i, j = j, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
     colnames(res) <- colnames(data@geno)[j]
     res <- t(res)
 
@@ -868,21 +884,25 @@ getCoefficients.lmerMod <- function(x) {
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param bufferSize Represents the number of columns of \code{@@geno} that are
-#'   brought into RAM for processing (5000 by default).
+#' @param bufferSize The number of columns of \code{X} that are brought into
+#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#'   \code{NULL}, all elements in \code{j} are used.
+#' @param nBuffers The number of partitions of the columns of \code{X} that are
+#'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+#'   both parameters are \code{NULL}, all elements in \code{j} are used.
 #' @param nTasks Represents the number of parallel tasks each buffer is split
 #'   into.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
 #' @param verbose If TRUE more messages are printed.
 #' @export
-summarize <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE) {
+summarize <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = FALSE) {
     res <- chunkedApply(X = X, MARGIN = 2, FUN = function(col) {
         freqNA <- mean(is.na(col))
         alleleFreq <- mean(col, na.rm = TRUE) / 2
         sd <- sd(col, na.rm = TRUE)
         cbind(freqNA, alleleFreq, sd)
-    }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+    }, i = i, j = j, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     rownames(res) <- c("freq_na", "allele_freq", "sd")
     colnames(res) <- colnames(X)
     t(res)
