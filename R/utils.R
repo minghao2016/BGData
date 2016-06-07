@@ -277,7 +277,7 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'
 #' @param x A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param nChunks The number of columns that are processed at a time.
+#' @param nBuffers The number of columns that are processed at a time.
 #' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
 #'   xx'.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
@@ -305,12 +305,12 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, nChunks = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", mc.cores = 1, verbose = TRUE) {
+getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", mc.cores = 1, verbose = TRUE) {
     if (is.null(i2)) {
-        G <- getGi(x = x, nChunks = nChunks, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
+        G <- getGi(x = x, nBuffers = nBuffers, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, nChunks = nChunks, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, nBuffers = nBuffers, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -325,7 +325,7 @@ getG <- function(x, nChunks = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerC
 }
 
 
-getGi <- function(x, nChunks = ceiling(ncol(x) / 10000), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -357,10 +357,10 @@ getGi <- function(x, nChunks = ceiling(ncol(x) / 10000), scales = NULL, centers 
 
     G <- matrix(data = 0, nrow = n, ncol = n, dimnames = list(rownames(x)[i], rownames(x)[i]))
 
-    chunkSize <- ceiling(p / nChunks)
+    chunkSize <- ceiling(p / nBuffers)
 
     end <- 0
-    for (k in seq_len(nChunks)) {
+    for (k in seq_len(nBuffers)) {
         ini <- end + 1
         if (ini <= p) {
             end <- min(p, ini + chunkSize - 1)
@@ -426,7 +426,7 @@ getGi <- function(x, nChunks = ceiling(ncol(x) / 10000), scales = NULL, centers 
 }
 
 
-getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE,scaleG = TRUE, nChunks = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE,scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -461,10 +461,10 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 
     G <- matrix(data = 0, nrow = n1, ncol = n2, dimnames = list(rownames(x)[i1], rownames(x)[i2]))
 
-    chunkSize <- ceiling(p / nChunks)
+    chunkSize <- ceiling(p / nBuffers)
 
     end <- 0
-    for (k in seq_len(nChunks)) {
+    for (k in seq_len(nBuffers)) {
         ini <- end + 1
         if (ini <= p) {
             end <- min(p, ini + chunkSize - 1)
@@ -532,7 +532,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #'
 #' @param X A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param nChunks The number of columns that are processed at a time.
+#' @param nBuffers The number of columns that are processed at a time.
 #' @param chunkSize The number of columns that are processed at a time.
 #' @param centers Precomputed centers.
 #' @param scales Precomputed scales.
@@ -557,7 +557,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nChunks2 = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
+getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nChunks2 = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 
@@ -623,11 +623,11 @@ getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, sc
     }
 
     if (is.null(chunkSize)) {
-        chunkSize <- ceiling(n / nChunks)
+        chunkSize <- ceiling(n / nBuffers)
     }
     chunkIndex <- cbind(i, ceiling(seq_len(n) / chunkSize))
 
-    nFiles <- nChunks * (nChunks + 1) / 2
+    nFiles <- nBuffers * (nBuffers + 1) / 2
     DATA <- list()
 
     if (file.exists(folder)) {
@@ -638,7 +638,7 @@ getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, sc
     setwd(folder)
 
     counter <- 1
-    for (r in seq_len(nChunks)) {
+    for (r in seq_len(nBuffers)) {
 
         DATA[[r]] <- list()
 
@@ -653,10 +653,10 @@ getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, sc
             Xi[, k] <- xik
         }
 
-        for (s in r:nChunks) {
+        for (s in r:nBuffers) {
 
             if (verbose) {
-                message(" Working pair ", r, "-", s, " (", round(100 * counter / (nChunks * (nChunks + 1) / 2)), "% ", round(proc.time()[3] - timeIn, 3), " seconds).")
+                message(" Working pair ", r, "-", s, " (", round(100 * counter / (nBuffers * (nBuffers + 1) / 2)), "% ", round(proc.time()[3] - timeIn, 3), " seconds).")
             }
 
             rowIndex_s <- chunkIndex[which(chunkIndex[, 2] == s), 1]

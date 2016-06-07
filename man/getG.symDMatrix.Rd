@@ -5,7 +5,7 @@
 \title{Computes a genomic relationship matrix G=xx' without ever loading G in RAM by
 creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 \usage{
-getG.symDMatrix(X, nChunks = 5, chunkSize = NULL, centers = NULL,
+getG.symDMatrix(X, nBuffers = 5, chunkSize = NULL, centers = NULL,
   scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE,
   nChunks2 = mc.cores, folder = randomString(), vmode = "double",
   saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)),
@@ -15,7 +15,7 @@ getG.symDMatrix(X, nChunks = 5, chunkSize = NULL, centers = NULL,
 \item{X}{A matrix-like object, typically \code{@geno} of a
 \code{\link[=BGData-class]{BGData}} object.}
 
-\item{nChunks}{The number of columns that are processed at a time.}
+\item{nBuffers}{The number of columns that are processed at a time.}
 
 \item{chunkSize}{The number of columns that are processed at a time.}
 
