@@ -277,17 +277,17 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'
 #' @param x A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
-#'   xx'.
-#' @param centerCol TRUE/FALSE whether columns must be centered before computing
-#'   xx'.
-#' @param scaleG TRUE/FALSE whether xx' must be scaled.
 #' @param i (integer, boolean or character) Indicates which rows should be used.
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
 #' @param i2 (integer, boolean or character) Indicates which rows should be used
 #'   to divide matrix into blocks.
+#' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
+#'   xx'.
+#' @param centerCol TRUE/FALSE whether columns must be centered before computing
+#'   xx'.
+#' @param scaleG TRUE/FALSE whether xx' must be scaled.
 #' @param minVar Columns with variance lower than this value will not be used in
 #'   the computation (only if \code{scaleCol} is set).
 #' @param scales Precomputed scales if i2 is used.
@@ -305,12 +305,12 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, minVar = 1e-05, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     if (is.null(i2)) {
-        G <- getGi(x = x, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGi(x = x, i = i, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, j = j, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -325,7 +325,7 @@ getG <- function(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_le
 }
 
 
-getGi <- function(x, scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -426,7 +426,7 @@ getGi <- function(x, scales = NULL, centers = NULL, scaleCol = TRUE, centerCol =
 }
 
 
-getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, j = seq_len(ncol(x)), minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, j = seq_len(ncol(x)), scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)

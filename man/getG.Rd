@@ -4,8 +4,8 @@
 \alias{getG}
 \title{Computes a genomic relationship matrix G=xx'.}
 \usage{
-getG(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE,
-  i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05,
+getG(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL,
+  scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, minVar = 1e-05,
   scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData",
   saveName = "Gij", nBuffers = ceiling(ncol(x)/10000), nTasks = mc.cores,
   mc.cores = 1, verbose = TRUE)
@@ -13,14 +13,6 @@ getG(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE,
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
 \code{\link[=BGData-class]{BGData}} object.}
-
-\item{scaleCol}{TRUE/FALSE whether columns must be scaled before computing
-xx'.}
-
-\item{centerCol}{TRUE/FALSE whether columns must be centered before computing
-xx'.}
-
-\item{scaleG}{TRUE/FALSE whether xx' must be scaled.}
 
 \item{i}{(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.}
@@ -30,6 +22,14 @@ used. By default, all columns are used.}
 
 \item{i2}{(integer, boolean or character) Indicates which rows should be used
 to divide matrix into blocks.}
+
+\item{scaleCol}{TRUE/FALSE whether columns must be scaled before computing
+xx'.}
+
+\item{centerCol}{TRUE/FALSE whether columns must be centered before computing
+xx'.}
+
+\item{scaleG}{TRUE/FALSE whether xx' must be scaled.}
 
 \item{minVar}{Columns with variance lower than this value will not be used in
 the computation (only if \code{scaleCol} is set).}
