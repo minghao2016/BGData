@@ -5,9 +5,8 @@
 \title{Reads chunks of data from a memory-mapped file into memory and applies a
 function on each row or column of a matrix in parallel.}
 \usage{
-chunkedApply(X, MARGIN, FUN, bufferSize, i = seq_len(nrow(X)),
-  j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1,
-  verbose = FALSE, ...)
+chunkedApply(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
+  bufferSize, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
@@ -18,14 +17,14 @@ indicates rows, 2 indicates columns.}
 
 \item{FUN}{The function to be applied.}
 
-\item{bufferSize}{The number of rows or columns of \code{X} that are brought
-into memory for processing.}
-
 \item{i}{(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.}
 
 \item{j}{(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.}
+
+\item{bufferSize}{The number of rows or columns of \code{X} that are brought
+into memory for processing.}
 
 \item{nTasks}{The number of submatrices of each buffered subset of \code{X}
 to be processed in parallel.}

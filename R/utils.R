@@ -142,12 +142,12 @@ parallelApply <- function(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...) 
 #' @param MARGIN The subscripts which the function will be applied over. 1
 #'   indicates rows, 2 indicates columns.
 #' @param FUN The function to be applied.
-#' @param bufferSize The number of rows or columns of \code{X} that are brought
-#'   into memory for processing.
 #' @param i (integer, boolean or character) Indicates which rows should be used.
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
+#' @param bufferSize The number of rows or columns of \code{X} that are brought
+#'   into memory for processing.
 #' @param nTasks The number of submatrices of each buffered subset of \code{X}
 #'   to be processed in parallel.
 #' @param mc.cores The number of cores (passed to
@@ -155,7 +155,7 @@ parallelApply <- function(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...) 
 #' @param verbose Whether to print additional information.
 #' @param ... Additional arguments to be passed to \code{parallelApply}.
 #' @export
-chunkedApply <- function(X, MARGIN, FUN, bufferSize, i = seq_len(nrow(X)), j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+chunkedApply <- function(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
     if (!length(dim(X))) {
         stop("dim(X) must have a positive length")
     }
@@ -769,7 +769,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
             pheno$z <- col
             fm <- FUN(GWAS.model, data = pheno, ...)
             getCoefficients(fm)
-        }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+        }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
         colnames(OUT) <- colnames(data@geno)[j]
         OUT <- t(OUT)
     }
@@ -796,7 +796,7 @@ GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(nc
         model[, 1] <- col
         fm <- lsfit(x = model, y = y, intercept = FALSE)
         ls.print(fm, print.it = FALSE)$coef.table[[1]][1, ]
-    }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+    }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
     colnames(res) <- colnames(data@geno)[j]
     res <- t(res)
 
@@ -882,7 +882,7 @@ summarize <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), bufferSize 
         alleleFreq <- mean(col, na.rm = TRUE) / 2
         sd <- sd(col, na.rm = TRUE)
         cbind(freqNA, alleleFreq, sd)
-    }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+    }, i = i, j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     rownames(res) <- c("freq_na", "allele_freq", "sd")
     colnames(res) <- colnames(X)
     t(res)
