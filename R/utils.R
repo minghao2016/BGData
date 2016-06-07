@@ -178,7 +178,7 @@ chunkedApply <- function(X, MARGIN, FUN, bufferSize, i = seq_len(nrow(X)), j = s
 
 
 # Computes crossprod(x,y) or tcrossprod(x,y)
-crossprods <- function(x, y = NULL, nChunks = mc.cores, use_tcrossprod = FALSE, mc.cores = 1) {
+crossprods <- function(x, y = NULL, use_tcrossprod = FALSE, nTasks = mc.cores, mc.cores = 1) {
     dx <- dim(x)
     if (!is.null(y)) {
         y <- as.matrix(y)
@@ -193,7 +193,7 @@ crossprods <- function(x, y = NULL, nChunks = mc.cores, use_tcrossprod = FALSE, 
             }
         }
     }
-    if (nChunks == 1) {
+    if (nTasks == 1) {
         if (use_tcrossprod) {
             Xy <- tcrossprod(x, y)
         } else {
@@ -204,9 +204,9 @@ crossprods <- function(x, y = NULL, nChunks = mc.cores, use_tcrossprod = FALSE, 
         if (!is.null(y)) {
             nY <- ifelse(use_tcrossprod, dy[2], dy[1])
         }
-        chunks <- parallel::mclapply(X = seq_len(nChunks), FUN = function(chunk) {
+        chunks <- parallel::mclapply(X = seq_len(nTasks), FUN = function(chunk) {
             if (!is.null(y)) {
-                ranges <- LinkedMatrix:::chunkRanges(nY, nChunks, chunk)
+                ranges <- LinkedMatrix:::chunkRanges(nY, nTasks, chunk)
                 if (use_tcrossprod) {
                     Y <- y[, seq(ranges[1], ranges[2]), drop = FALSE]
                 } else {
@@ -215,7 +215,7 @@ crossprods <- function(x, y = NULL, nChunks = mc.cores, use_tcrossprod = FALSE, 
             } else {
                 Y <- NULL
             }
-            ranges <- LinkedMatrix:::chunkRanges(nX, nChunks, chunk)
+            ranges <- LinkedMatrix:::chunkRanges(nX, nTasks, chunk)
             if (use_tcrossprod) {
                 X <- x[, seq(ranges[1], ranges[2]), drop = FALSE]
                 Xy <- tcrossprod(X, Y)
@@ -242,13 +242,13 @@ crossprods <- function(x, y = NULL, nChunks = mc.cores, use_tcrossprod = FALSE, 
 #' @param x A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
 #' @param y vector or matrix-like object. NULL by default.
-#' @param nChunks The number of chunks used when X and y are partitioned.
+#' @param nTasks The number of chunks used when X and y are partitioned.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
 #' @return x'y' or x'x depending on whether y is provided.
 #' @export
-crossprod.parallel <- function(x, y = NULL, nChunks = mc.cores, mc.cores = 1) {
-    crossprods(x = x, y = y, nChunks = nChunks, mc.cores = mc.cores, use_tcrossprod = FALSE)
+crossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
+    crossprods(x = x, y = y, use_tcrossprod = FALSE, nTasks = nTasks, mc.cores = mc.cores)
 }
 
 
@@ -257,13 +257,13 @@ crossprod.parallel <- function(x, y = NULL, nChunks = mc.cores, mc.cores = 1) {
 #' @param x A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
 #' @param y vector or matrix-like object. NULL by default.
-#' @param nChunks The number of chunks used when X and y are partitioned.
+#' @param nTasks The number of chunks used when X and y are partitioned.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
 #' @return xy' or xx' depending on whether y is provided.
 #' @export
-tcrossprod.parallel <- function(x, y = NULL, nChunks = mc.cores, mc.cores = 1) {
-    crossprods(x = x, y = y, nChunks = nChunks, mc.cores = mc.cores, use_tcrossprod = TRUE)
+tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
+    crossprods(x = x, y = y, use_tcrossprod = TRUE, nTasks = nTasks, mc.cores = mc.cores)
 }
 
 
@@ -409,7 +409,7 @@ getGi <- function(x, nChunks = ceiling(ncol(x) / 10000), scales = NULL, centers 
                 X[is.na(X)] <- 0
 
                 if (nChunks2 > 1) {
-                  G_chunk <- crossprods(x = X, use_tcrossprod = TRUE, nChunks = nChunks2, mc.cores = mc.cores)
+                  G_chunk <- tcrossprod.parallel(x = X, nTasks = nChunks2, mc.cores = mc.cores)
                 } else {
                   G_chunk <- tcrossprod(X)
                 }
@@ -504,7 +504,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
                 X1[is.na(X1)] <- 0
                 X2 <- scale(X2, center = centers.chunk, scale = scales.chunk)
                 X2[is.na(X2)] <- 0
-                G_chunk <- tcrossprod.parallel(x = X1, y = X2, mc.cores = mc.cores, nChunks = nChunks2)
+                G_chunk <- tcrossprod.parallel(x = X1, y = X2, nTasks = nChunks2, mc.cores = mc.cores)
                 G[] <- G + G_chunk
             }
             if (scaleG) {
@@ -670,7 +670,7 @@ getG.symDMatrix <- function(X, nChunks = 5, chunkSize = NULL, centers = NULL, sc
                 Xj[, k] <- xjk
             }
 
-            Gij <- tcrossprod.parallel(x = Xi, y = Xj, mc.cores = mc.cores, nChunks = nChunks2)
+            Gij <- tcrossprod.parallel(x = Xi, y = Xj, nTasks = nChunks2, mc.cores = mc.cores)
 
             DATA[[r]][[s - r + 1]] <- ff::ff(dim = dim(Gij), vmode = vmode, initdata = as.vector(Gij), filename = paste0("data_", r, "_", s, ".bin"), dimnames = list(rownames(X)[rowIndex_r], rownames(X)[rowIndex_s]))
             bit::physical(DATA[[r]][[s - r + 1]])$pattern <- "ff"

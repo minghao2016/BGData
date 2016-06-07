@@ -47,14 +47,14 @@ for (nCores in seq_len(2)) {
 
         # Testing X'X
         TMP <- crossprod(W)
-        for (nChunks in c(1, 3)) {
-            expect_equal(crossprod.parallel(W, nChunks = nChunks, mc.cores = nCores), TMP)
+        for (nTasks in c(1, 3)) {
+            expect_equal(crossprod.parallel(W, nTasks = nTasks, mc.cores = nCores), TMP)
         }
 
         # Testing X'y
         TMP <- crossprod(W, y = Z)
-        for (nChunks in c(1, 3)) {
-            expect_equal(crossprod.parallel(W, y = Z, nChunks = nChunks, mc.cores = nCores), TMP)
+        for (nTasks in c(1, 3)) {
+            expect_equal(crossprod.parallel(W, y = Z, nTasks = nTasks, mc.cores = nCores), TMP)
         }
 
     })
@@ -69,14 +69,14 @@ for (nCores in seq_len(2)) {
 
         # Testing XX'
         TMP <- tcrossprod(W)
-        for (nChunks in c(1, 3)) {
-            expect_equal(tcrossprod.parallel(W, nChunks = nChunks, mc.cores = nCores), TMP)
+        for (nTasks in c(1, 3)) {
+            expect_equal(tcrossprod.parallel(W, nTasks = nTasks, mc.cores = nCores), TMP)
         }
 
         # Testing XY'
         TMP <- tcrossprod(W, y = Z)
-        for (nChunks in c(1, 3)) {
-            expect_equal(tcrossprod.parallel(W, y = Z, nChunks = nChunks, mc.cores = nCores), TMP)
+        for (nTasks in c(1, 3)) {
+            expect_equal(tcrossprod.parallel(W, y = Z, nTasks = nTasks, mc.cores = nCores), TMP)
         }
 
     })
