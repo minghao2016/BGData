@@ -7,9 +7,8 @@ creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 \usage{
 getG.symDMatrix(X, nChunks = 5, chunkSize = NULL, centers = NULL,
   scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE,
-  nChunks2 = parallel::detectCores(), folder = randomString(),
-  vmode = "double", verbose = TRUE, saveRData = TRUE,
-  mc.cores = parallel::detectCores(), i = seq_len(nrow(X)),
+  nChunks2 = mc.cores, folder = randomString(), vmode = "double",
+  verbose = TRUE, saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)),
   j = seq_len(ncol(X)))
 }
 \arguments{

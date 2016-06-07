@@ -5,8 +5,7 @@
 \title{Calculates frequencies of missing values and alleles.}
 \usage{
 summarize(X, verbose = FALSE, bufferSize = 5000, i = seq_len(nrow(X)),
-  j = seq_len(ncol(X)), nTasks = parallel::detectCores(),
-  mc.cores = parallel::detectCores())
+  j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a

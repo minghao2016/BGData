@@ -6,10 +6,9 @@
 \usage{
 getG(x, nChunks = ceiling(ncol(x)/10000), scaleCol = TRUE,
   centerCol = TRUE, scaleG = TRUE, verbose = TRUE, i = seq_len(nrow(x)),
-  j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05,
-  nChunks2 = parallel::detectCores(), scales = NULL, centers = NULL,
-  saveG = FALSE, saveType = "RData", saveName = "Gij",
-  mc.cores = parallel::detectCores())
+  j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores,
+  scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData",
+  saveName = "Gij", mc.cores = 1)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a

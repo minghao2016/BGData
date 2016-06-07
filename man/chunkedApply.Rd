@@ -6,8 +6,8 @@
 function on each row or column of a matrix in parallel.}
 \usage{
 chunkedApply(X, MARGIN, FUN, bufferSize, i = seq_len(nrow(X)),
-  j = seq_len(ncol(X)), nTasks = parallel::detectCores(),
-  mc.cores = parallel::detectCores(), verbose = FALSE, ...)
+  j = seq_len(ncol(X)), nTasks = mc.cores, mc.cores = 1,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a

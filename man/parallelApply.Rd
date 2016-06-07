@@ -4,8 +4,7 @@
 \alias{parallelApply}
 \title{Applies a function on each row or column of a matrix in parallel.}
 \usage{
-parallelApply(X, MARGIN, FUN, nTasks = parallel::detectCores(),
-  mc.cores = parallel::detectCores(), ...)
+parallelApply(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...)
 }
 \arguments{
 \item{X}{A matrix.}
