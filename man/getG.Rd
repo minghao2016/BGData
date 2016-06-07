@@ -6,7 +6,7 @@
 \usage{
 getG(x, nBuffers = ceiling(ncol(x)/10000), scaleCol = TRUE,
   centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)),
-  j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores,
+  j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nTasks = mc.cores,
   scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData",
   saveName = "Gij", mc.cores = 1, verbose = TRUE)
 }
@@ -36,7 +36,7 @@ to divide matrix into blocks.}
 \item{minVar}{Columns with variance lower than this value will not be used in
 the computation (only if \code{scaleCol} is set).}
 
-\item{nChunks2}{The number of chunks that each chunk is split into for
+\item{nTasks}{The number of chunks that each chunk is split into for
 processing in parallel.}
 
 \item{scales}{Precomputed scales if i2 is used.}

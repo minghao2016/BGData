@@ -90,7 +90,7 @@ for (nCores in seq_len(2)) {
         G1 <- G1 / mean(diag(G1))
 
         for (nTasks in c(1, 3)) {
-            G2 <- getG.symDMatrix(X = W, nBuffers = 3, folder = paste0(testPath, "test-", randomString()), nChunks2 = nTasks, mc.cores = nCores, verbose = FALSE)
+            G2 <- getG.symDMatrix(X = W, nBuffers = 3, folder = paste0(testPath, "test-", randomString()), nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
             expect_equal(G2[], G1)
         }
 
@@ -105,33 +105,33 @@ for (nCores in seq_len(2)) {
         X <- matrix(data = rnorm(n * p), nrow = n, ncol = p)
 
         for (nBuffers in c(1, 3)) {
-            for (nChunks2 in c(1, 3)) {
+            for (nTasks in c(1, 3)) {
 
                 # both scalings
                 G <- tcrossprod(scale(X))
                 G <- G / mean(diag(G))
-                G2 <- getG(x = X, scaleG = TRUE, scaleCol = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G2 <- getG(x = X, scaleG = TRUE, scaleCol = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G, G2, check.attributes = FALSE)
 
                 # without scaling to average diagonal = 1 (scaleG)
                 G <- tcrossprod(scale(X))
-                G2 <- getG(x = X, scaleG = FALSE, scaleCol = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G2 <- getG(x = X, scaleG = FALSE, scaleCol = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G, G2, check.attributes = FALSE)
 
                 # without scaling columns, but scaling average diagonal = 1 (scaleG)
                 G <- tcrossprod(scale(X, center = TRUE, scale = FALSE))
                 G <- G / mean(diag(G))
-                G2 <- getG(x = X, scaleG = TRUE, scaleCol = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G2 <- getG(x = X, scaleG = TRUE, scaleCol = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G, G2, check.attributes = FALSE)
 
                 # no scaling at all
                 G <- tcrossprod(scale(X, center = TRUE, scale = FALSE))
-                G2 <- getG(x = X, scaleG = FALSE, scaleCol = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G2 <- getG(x = X, scaleG = FALSE, scaleCol = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G, G2, check.attributes = FALSE)
 
                 # neither scaling nor centering
                 G <- tcrossprod(X)
-                G2 <- getG(x = X, scaleG = FALSE, centerCol = FALSE, scaleCol = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G2 <- getG(x = X, scaleG = FALSE, centerCol = FALSE, scaleCol = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G, G2, check.attributes = FALSE)
 
             }
@@ -153,7 +153,7 @@ for (nCores in seq_len(2)) {
         X <- matrix(data = rnorm(n * p), nrow = n, ncol = p)
 
         for (nBuffers in c(1, 3)) {
-            for (nChunks2 in c(1, 3)) {
+            for (nTasks in c(1, 3)) {
 
                 i <- sample(1:nrow(X), size = 3)
                 i2 <- sample(1:nrow(X), size = 4)
@@ -164,18 +164,18 @@ for (nCores in seq_len(2)) {
                 # all scalings
                 G <- tcrossprod(scale(X))
                 G <- G / mean(diag(G))
-                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = TRUE, scaleCol = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = TRUE, scaleCol = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i2], G_12, check.attributes = FALSE)
 
-                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i], G_12, check.attributes = FALSE)
 
                 # without scaling to average diagonal = 1
                 G <- tcrossprod(scale(X) * sqrt(n/(n - 1)))
-                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i2], G_12, check.attributes = FALSE)
 
-                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i], G_12, check.attributes = FALSE)
 
                 # without scaling columns, but scaling average diagonal = 1
@@ -183,18 +183,18 @@ for (nCores in seq_len(2)) {
 
                 G <- tcrossprod(scale(X, center = TRUE, scale = FALSE))
                 G <- G / ncol(X)
-                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i2], G_12, check.attributes = FALSE)
 
-                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = TRUE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i], G_12, check.attributes = FALSE)
 
                 # no scaling at all
                 G <- tcrossprod(scale(X, center = TRUE, scale = FALSE))
-                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i2, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i2], G_12, check.attributes = FALSE)
 
-                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nChunks2 = nChunks2, mc.cores = nCores, verbose = FALSE)
+                G_12 <- getG(x = X, i = i, i2 = i, centers = centers, scales = scales, scaleG = FALSE, nBuffers = nBuffers, nTasks = nTasks, mc.cores = nCores, verbose = FALSE)
                 expect_equal(G[i, i], G_12, check.attributes = FALSE)
 
             }

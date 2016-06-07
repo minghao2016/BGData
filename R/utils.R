@@ -291,7 +291,7 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'   to divide matrix into blocks.
 #' @param minVar Columns with variance lower than this value will not be used in
 #'   the computation (only if \code{scaleCol} is set).
-#' @param nChunks2 The number of chunks that each chunk is split into for
+#' @param nTasks The number of chunks that each chunk is split into for
 #'   processing in parallel.
 #' @param scales Precomputed scales if i2 is used.
 #' @param centers Precomputed centers if i2 is used.
@@ -305,12 +305,12 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", mc.cores = 1, verbose = TRUE) {
+getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nTasks = mc.cores, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", mc.cores = 1, verbose = TRUE) {
     if (is.null(i2)) {
-        G <- getGi(x = x, nBuffers = nBuffers, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
+        G <- getGi(x = x, nBuffers = nBuffers, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, nBuffers = nBuffers, j = j, minVar = minVar, nChunks2 = nChunks2, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, nBuffers = nBuffers, j = j, minVar = minVar, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -325,7 +325,7 @@ getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, center
 }
 
 
-getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -408,8 +408,8 @@ getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers
                 X <- scale(X, center = centers.chunk, scale = scales.chunk)
                 X[is.na(X)] <- 0
 
-                if (nChunks2 > 1) {
-                  G_chunk <- tcrossprod.parallel(x = X, nTasks = nChunks2, mc.cores = mc.cores)
+                if (nTasks > 1) {
+                  G_chunk <- tcrossprod.parallel(x = X, nTasks = nTasks, mc.cores = mc.cores)
                 } else {
                   G_chunk <- tcrossprod(X)
                 }
@@ -426,7 +426,7 @@ getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers
 }
 
 
-getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE,scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nChunks2 = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE,scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -504,7 +504,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
                 X1[is.na(X1)] <- 0
                 X2 <- scale(X2, center = centers.chunk, scale = scales.chunk)
                 X2[is.na(X2)] <- 0
-                G_chunk <- tcrossprod.parallel(x = X1, y = X2, nTasks = nChunks2, mc.cores = mc.cores)
+                G_chunk <- tcrossprod.parallel(x = X1, y = X2, nTasks = nTasks, mc.cores = mc.cores)
                 G[] <- G + G_chunk
             }
             if (scaleG) {
@@ -541,7 +541,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
 #'   xx'.
 #' @param scaleG TRUE/FALSE whether xx' must be scaled.
-#' @param nChunks2 The number of chunks that each chunk is split into for
+#' @param nTasks The number of chunks that each chunk is split into for
 #'   processing in parallel.
 #' @param folder Folder in which to save the
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}.
@@ -557,7 +557,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nChunks2 = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
+getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nTasks = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 
@@ -670,7 +670,7 @@ getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, s
                 Xj[, k] <- xjk
             }
 
-            Gij <- tcrossprod.parallel(x = Xi, y = Xj, nTasks = nChunks2, mc.cores = mc.cores)
+            Gij <- tcrossprod.parallel(x = Xi, y = Xj, nTasks = nTasks, mc.cores = mc.cores)
 
             DATA[[r]][[s - r + 1]] <- ff::ff(dim = dim(Gij), vmode = vmode, initdata = as.vector(Gij), filename = paste0("data_", r, "_", s, ".bin"), dimnames = list(rownames(X)[rowIndex_r], rownames(X)[rowIndex_s]))
             bit::physical(DATA[[r]][[s - r + 1]])$pattern <- "ff"
