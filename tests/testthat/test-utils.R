@@ -251,7 +251,7 @@ for (nCores in seq_len(2)) {
 
         for (bufferSize in c(3, 6)) {
             for (nTasks in c(1, 2)) {
-                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", chunkSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
+                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
                 expect_equal(comp, fm)
             }
         }
@@ -266,7 +266,7 @@ for (nCores in seq_len(2)) {
 
         for (bufferSize in c(3, 6)) {
             for (nTasks in c(1, 2)) {
-                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", i = i, chunkSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
+                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", i = i, bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
                 expect_equal(comp, fm)
             }
         }
@@ -281,7 +281,7 @@ for (nCores in seq_len(2)) {
 
         for (bufferSize in c(3, 6)) {
             for (nTasks in c(1, 2)) {
-                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", j = j, chunkSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
+                fm <- GWAS(formula = y ~ 1, data = DATA, method = "lsfit", j = j, bufferSize = bufferSize, nTasks = nTasks, mc.cores = nCores)
                 expect_equal(comp, fm)
             }
         }

@@ -6,7 +6,7 @@
 \code{\link[=BGData-class]{BGData}} object.}
 \usage{
 GWAS(formula, data, method, i = seq_len(nrow(data@geno)),
-  j = seq_len(ncol(data@geno)), chunkSize = 5000, nTasks = mc.cores,
+  j = seq_len(ncol(data@geno)), bufferSize = 5000, nTasks = mc.cores,
   mc.cores = 1, verbose = FALSE, ...)
 }
 \arguments{
@@ -27,7 +27,7 @@ By default, all rows are used.}
 \item{j}{(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.}
 
-\item{chunkSize}{Represents the number of columns of \code{@geno} that are
+\item{bufferSize}{Represents the number of columns of \code{@geno} that are
 brought into RAM for processing (5000 by default).}
 
 \item{nTasks}{The number of submatrices of \code{X} to be processed in

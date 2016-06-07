@@ -357,13 +357,13 @@ getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers
 
     G <- matrix(data = 0, nrow = n, ncol = n, dimnames = list(rownames(x)[i], rownames(x)[i]))
 
-    chunkSize <- ceiling(p / nBuffers)
+    bufferSize <- ceiling(p / nBuffers)
 
     end <- 0
     for (k in seq_len(nBuffers)) {
         ini <- end + 1
         if (ini <= p) {
-            end <- min(p, ini + chunkSize - 1)
+            end <- min(p, ini + bufferSize - 1)
             if (verbose) {
                 message("Chunk: ", k, " (markers ", ini, ":", end, " ~", round(100 * end / p, 1), "% done)")
                 message("  =>Acquiring genotypes...")
@@ -426,7 +426,7 @@ getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers
 }
 
 
-getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE,scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -461,13 +461,13 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 
     G <- matrix(data = 0, nrow = n1, ncol = n2, dimnames = list(rownames(x)[i1], rownames(x)[i2]))
 
-    chunkSize <- ceiling(p / nBuffers)
+    bufferSize <- ceiling(p / nBuffers)
 
     end <- 0
     for (k in seq_len(nBuffers)) {
         ini <- end + 1
         if (ini <= p) {
-            end <- min(p, ini + chunkSize - 1)
+            end <- min(p, ini + bufferSize - 1)
             if (verbose) {
                 message("Working with chunk: ", k, " (markers ", ini, ":", end, " ~", round(100 * ini / p, 1), "% done)")
                 message("  =>Acquiring genotypes...")
@@ -533,7 +533,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param X A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
 #' @param nBuffers The number of columns that are processed at a time.
-#' @param chunkSize The number of columns that are processed at a time.
+#' @param bufferSize The number of columns that are processed at a time.
 #' @param centers Precomputed centers.
 #' @param scales Precomputed scales.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
@@ -557,7 +557,7 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nTasks = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
+getG.symDMatrix <- function(X, nBuffers = 5, bufferSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nTasks = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 
@@ -622,10 +622,10 @@ getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, s
         scales <- rep(1, p)
     }
 
-    if (is.null(chunkSize)) {
-        chunkSize <- ceiling(n / nBuffers)
+    if (is.null(bufferSize)) {
+        bufferSize <- ceiling(n / nBuffers)
     }
-    chunkIndex <- cbind(i, ceiling(seq_len(n) / chunkSize))
+    chunkIndex <- cbind(i, ceiling(seq_len(n) / bufferSize))
 
     nFiles <- nBuffers * (nBuffers + 1) / 2
     DATA <- list()
@@ -728,7 +728,7 @@ getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, s
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param chunkSize Represents the number of columns of \code{@@geno} that are
+#' @param bufferSize Represents the number of columns of \code{@@geno} that are
 #'   brought into RAM for processing (5000 by default).
 #' @param nTasks The number of submatrices of \code{X} to be processed in
 #'   parallel.
@@ -738,7 +738,7 @@ getG.symDMatrix <- function(X, nBuffers = 5, chunkSize = NULL, centers = NULL, s
 #' @param ... Additional arguments for chunkedApply and regression method.
 #' @return Returns a matrix with estimates, SE, p-value, etc.
 #' @export
-GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), chunkSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = 5000, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     if (class(data) != "BGData") {
         stop("data must BGData")
@@ -751,7 +751,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
     # We can have specialized methods, for instance for OLS it is better to use
     # lsfit (that is what GWAS.ols does)
     if (method %in% c("lm", "lm.fit", "lsfit")) {
-        OUT <- GWAS.ols(formula = formula, data = data, i = i, j = j, verbose = verbose, chunkSize = chunkSize, nTasks = nTasks, mc.cores = mc.cores, ...)
+        OUT <- GWAS.ols(formula = formula, data = data, i = i, j = j, verbose = verbose, bufferSize = bufferSize, nTasks = nTasks, mc.cores = mc.cores, ...)
     } else if (method == "SKAT") {
         OUT <- GWAS.SKAT(formula = formula, data = data, i = i, j = j, verbose = verbose, ...)
     } else {
@@ -769,7 +769,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
             pheno$z <- col
             fm <- FUN(GWAS.model, data = pheno, ...)
             getCoefficients(fm)
-        }, bufferSize = chunkSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+        }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
         colnames(OUT) <- colnames(data@geno)[j]
         OUT <- t(OUT)
     }
@@ -783,7 +783,7 @@ GWAS <- function(formula, data, method, i = seq_len(nrow(data@geno)), j = seq_le
 # y~1 or y~factor(sex)+age
 # all the variables in the formula must be in data@pheno data (BGData)
 # containing slots @pheno and @geno
-GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), chunkSize = 10, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
+GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(ncol(data@geno)), bufferSize = 10, nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...) {
 
     # subset of model.frame has bizarre scoping issues
     frame <- model.frame(formula = formula, data = data@pheno)[i, , drop = FALSE]
@@ -796,7 +796,7 @@ GWAS.ols <- function(formula, data, i = seq_len(nrow(data@geno)), j = seq_len(nc
         model[, 1] <- col
         fm <- lsfit(x = model, y = y, intercept = FALSE)
         ls.print(fm, print.it = FALSE)$coef.table[[1]][1, ]
-    }, bufferSize = chunkSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
+    }, bufferSize = bufferSize, i = i, j = j, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose, ...)
     colnames(res) <- colnames(data@geno)[j]
     res <- t(res)
 
