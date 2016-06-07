@@ -5,10 +5,10 @@
 \title{Computes a genomic relationship matrix G=xx'.}
 \usage{
 getG(x, nChunks = ceiling(ncol(x)/10000), scaleCol = TRUE,
-  centerCol = TRUE, scaleG = TRUE, verbose = TRUE, i = seq_len(nrow(x)),
+  centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)),
   j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nChunks2 = mc.cores,
   scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData",
-  saveName = "Gij", mc.cores = 1)
+  saveName = "Gij", mc.cores = 1, verbose = TRUE)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
@@ -23,8 +23,6 @@ xx'.}
 xx'.}
 
 \item{scaleG}{TRUE/FALSE whether xx' must be scaled.}
-
-\item{verbose}{If TRUE more messages are printed.}
 
 \item{i}{(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.}
@@ -55,6 +53,8 @@ with.}
 
 \item{mc.cores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
+
+\item{verbose}{If TRUE more messages are printed.}
 }
 \value{
 A positive semi-definite symmetric numeric matrix.
