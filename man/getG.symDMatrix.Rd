@@ -5,19 +5,21 @@
 \title{Computes a genomic relationship matrix G=xx' without ever loading G in RAM by
 creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 \usage{
-getG.symDMatrix(X, nBuffers = 5, bufferSize = NULL, centers = NULL,
-  scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE,
-  nTasks = mc.cores, folder = randomString(), vmode = "double",
-  saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)),
-  j = seq_len(ncol(X)), verbose = TRUE)
+getG.symDMatrix(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
+  centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE,
+  scaleG = TRUE, folder = randomString(), vmode = "double",
+  saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores,
+  mc.cores = 1, verbose = TRUE)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
 \code{\link[=BGData-class]{BGData}} object.}
 
-\item{nBuffers}{The number of columns that are processed at a time.}
+\item{i}{(integer, boolean or character) Indicates which rows should be used.
+By default, all rows are used.}
 
-\item{bufferSize}{The number of columns that are processed at a time.}
+\item{j}{(integer, boolean or character) Indicates which columns should be
+used. By default, all columns are used.}
 
 \item{centers}{Precomputed centers.}
 
@@ -31,9 +33,6 @@ xx'.}
 
 \item{scaleG}{TRUE/FALSE whether xx' must be scaled.}
 
-\item{nTasks}{The number of chunks that each chunk is split into for
-processing in parallel.}
-
 \item{folder}{Folder in which to save the
 \code{\link[=symDMatrix-class]{symDMatrix}}.}
 
@@ -42,14 +41,15 @@ processing in parallel.}
 \item{saveRData}{Whether to save an RData file to easily reload
 \code{\link[=symDMatrix-class]{symDMatrix}}}
 
+\item{nBuffers}{The number of columns that are processed at a time.}
+
+\item{bufferSize}{The number of columns that are processed at a time.}
+
+\item{nTasks}{The number of chunks that each chunk is split into for
+processing in parallel.}
+
 \item{mc.cores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
-
-\item{i}{(integer, boolean or character) Indicates which rows should be used.
-By default, all rows are used.}
-
-\item{j}{(integer, boolean or character) Indicates which columns should be
-used. By default, all columns are used.}
 
 \item{verbose}{If TRUE more messages are printed.}
 }

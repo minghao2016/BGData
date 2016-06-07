@@ -4,17 +4,15 @@
 \alias{getG}
 \title{Computes a genomic relationship matrix G=xx'.}
 \usage{
-getG(x, nBuffers = ceiling(ncol(x)/10000), scaleCol = TRUE,
-  centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)),
-  j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nTasks = mc.cores,
+getG(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE,
+  i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05,
   scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData",
-  saveName = "Gij", mc.cores = 1, verbose = TRUE)
+  saveName = "Gij", nBuffers = ceiling(ncol(x)/10000), nTasks = mc.cores,
+  mc.cores = 1, verbose = TRUE)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
 \code{\link[=BGData-class]{BGData}} object.}
-
-\item{nBuffers}{The number of columns that are processed at a time.}
 
 \item{scaleCol}{TRUE/FALSE whether columns must be scaled before computing
 xx'.}
@@ -36,9 +34,6 @@ to divide matrix into blocks.}
 \item{minVar}{Columns with variance lower than this value will not be used in
 the computation (only if \code{scaleCol} is set).}
 
-\item{nTasks}{The number of chunks that each chunk is split into for
-processing in parallel.}
-
 \item{scales}{Precomputed scales if i2 is used.}
 
 \item{centers}{Precomputed centers if i2 is used.}
@@ -50,6 +45,11 @@ processing in parallel.}
 
 \item{saveName}{Name without extension to save genomic relationship matrix
 with.}
+
+\item{nBuffers}{The number of columns that are processed at a time.}
+
+\item{nTasks}{The number of chunks that each chunk is split into for
+processing in parallel.}
 
 \item{mc.cores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}

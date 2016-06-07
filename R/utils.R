@@ -277,7 +277,6 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'
 #' @param x A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param nBuffers The number of columns that are processed at a time.
 #' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
 #'   xx'.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
@@ -291,8 +290,6 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'   to divide matrix into blocks.
 #' @param minVar Columns with variance lower than this value will not be used in
 #'   the computation (only if \code{scaleCol} is set).
-#' @param nTasks The number of chunks that each chunk is split into for
-#'   processing in parallel.
 #' @param scales Precomputed scales if i2 is used.
 #' @param centers Precomputed centers if i2 is used.
 #' @param saveG Whether to save genomic relationship matrix into file.
@@ -300,17 +297,20 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'   \code{RData} or \code{ff}.
 #' @param saveName Name without extension to save genomic relationship matrix
 #'   with.
+#' @param nBuffers The number of columns that are processed at a time.
+#' @param nTasks The number of chunks that each chunk is split into for
+#'   processing in parallel.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, nTasks = mc.cores, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", mc.cores = 1, verbose = TRUE) {
+getG <- function(x, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, minVar = 1e-05, scales = NULL, centers = NULL, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     if (is.null(i2)) {
-        G <- getGi(x = x, nBuffers = nBuffers, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGi(x = x, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, i = i, j = j, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, nBuffers = nBuffers, j = j, minVar = minVar, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, j = j, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -325,7 +325,7 @@ getG <- function(x, nBuffers = ceiling(ncol(x) / 10000), scaleCol = TRUE, center
 }
 
 
-getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, scales = NULL, centers = NULL, scaleCol = TRUE, centerCol = FALSE, scaleG = TRUE, i = seq_len(nrow(x)), j = seq_len(ncol(x)), minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -426,7 +426,7 @@ getGi <- function(x, nBuffers = ceiling(ncol(x) / 10000), scales = NULL, centers
 }
 
 
-getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, nBuffers = ceiling(ncol(x) / 10000), j = seq_len(ncol(x)), minVar = 1e-05, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE, scaleG = TRUE, j = seq_len(ncol(x)), minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -532,8 +532,10 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #'
 #' @param X A matrix-like object, typically \code{@@geno} of a
 #'   \code{\link[=BGData-class]{BGData}} object.
-#' @param nBuffers The number of columns that are processed at a time.
-#' @param bufferSize The number of columns that are processed at a time.
+#' @param i (integer, boolean or character) Indicates which rows should be used.
+#'   By default, all rows are used.
+#' @param j (integer, boolean or character) Indicates which columns should be
+#'   used. By default, all columns are used.
 #' @param centers Precomputed centers.
 #' @param scales Precomputed scales.
 #' @param centerCol TRUE/FALSE whether columns must be centered before computing
@@ -541,23 +543,21 @@ getGij <- function(x, i1, i2, scales, centers, scaleCol = TRUE, centerCol = TRUE
 #' @param scaleCol TRUE/FALSE whether columns must be scaled before computing
 #'   xx'.
 #' @param scaleG TRUE/FALSE whether xx' must be scaled.
-#' @param nTasks The number of chunks that each chunk is split into for
-#'   processing in parallel.
 #' @param folder Folder in which to save the
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}.
 #' @param vmode vmode of \code{ff} objects.
 #' @param saveRData Whether to save an RData file to easily reload
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}
+#' @param nBuffers The number of columns that are processed at a time.
+#' @param bufferSize The number of columns that are processed at a time.
+#' @param nTasks The number of chunks that each chunk is split into for
+#'   processing in parallel.
 #' @param mc.cores The number of cores (passed to
 #'   \code{\link[parallel]{mclapply}}).
-#' @param i (integer, boolean or character) Indicates which rows should be used.
-#'   By default, all rows are used.
-#' @param j (integer, boolean or character) Indicates which columns should be
-#'   used. By default, all columns are used.
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, nBuffers = 5, bufferSize = NULL, centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, nTasks = mc.cores, folder = randomString(), vmode = "double", saveRData = TRUE, mc.cores = 1, i = seq_len(nrow(X)), j = seq_len(ncol(X)), verbose = TRUE) {
+getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), centers = NULL, scales = NULL, centerCol = TRUE, scaleCol = TRUE, scaleG = TRUE, folder = randomString(), vmode = "double", saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 
