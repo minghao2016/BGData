@@ -7,8 +7,8 @@
 getG(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL,
   centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL,
   scaleG = TRUE, minVar = 1e-05, saveG = FALSE, saveType = "RData",
-  saveName = "Gij", nBuffers = ceiling(ncol(x)/10000), nTasks = mc.cores,
-  mc.cores = 1, verbose = TRUE)
+  saveName = "Gij", bufferSize = NULL, nBuffers = NULL,
+  nTasks = mc.cores, mc.cores = 1, verbose = TRUE)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
@@ -46,7 +46,13 @@ the computation (only if \code{scaleCol} is set).}
 \item{saveName}{Name without extension to save genomic relationship matrix
 with.}
 
-\item{nBuffers}{The number of columns that are processed at a time.}
+\item{bufferSize}{The number of columns of \code{x} that are brought into
+RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\code{NULL}, all columns of \code{x} are used.}
+
+\item{nBuffers}{The number of partitions of the columns of \code{x} that are
+brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+both parameters are \code{NULL}, all columns of \code{x} are used.}
 
 \item{nTasks}{The number of chunks that each chunk is split into for
 processing in parallel.}

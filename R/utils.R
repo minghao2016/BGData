@@ -309,7 +309,12 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #'   \code{RData} or \code{ff}.
 #' @param saveName Name without extension to save genomic relationship matrix
 #'   with.
-#' @param nBuffers The number of columns that are processed at a time.
+#' @param bufferSize The number of columns of \code{x} that are brought into
+#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#'   \code{NULL}, all columns of \code{x} are used.
+#' @param nBuffers The number of partitions of the columns of \code{x} that are
+#'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+#'   both parameters are \code{NULL}, all columns of \code{x} are used.
 #' @param nTasks The number of chunks that each chunk is split into for
 #'   processing in parallel.
 #' @param mc.cores The number of cores (passed to
@@ -317,12 +322,20 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = mc.cores, mc.cores = 1) {
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, saveG = FALSE, saveType = "RData", saveName = "Gij", nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, saveG = FALSE, saveType = "RData", saveName = "Gij", bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+    if (is.null(bufferSize) && is.null(nBuffers)) {
+        bufferSize <- length(j)
+        nBuffers <- 1
+    } else if (is.null(bufferSize) && !is.null(nBuffers)) {
+        bufferSize <- ceiling(length(j) / nBuffers)
+    } else {
+        nBuffers <- ceiling(length(j) / bufferSize)
+    }
     if (is.null(i2)) {
-        G <- getGi(x = x, i = i, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGi(x = x, i = i, j = j, scales = scales, centers = centers, scaleCol = scaleCol, centerCol = centerCol, scaleG = scaleG, minVar = minVar, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     } else {
         if (is.null(scales) || is.null(centers)) stop("scales and centers need to be precomputed.")
-        G <- getGij(x = x, i1 = i, i2 = i2, j = j, centerCol = centerCol, centers = centers, scaleCol = scaleCol, scales = scales, scaleG = scaleG, minVar = minVar, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
+        G <- getGij(x = x, i1 = i, i2 = i2, j = j, centerCol = centerCol, centers = centers, scaleCol = scaleCol, scales = scales, scaleG = scaleG, minVar = minVar, bufferSize = bufferSize, nBuffers = nBuffers, nTasks = nTasks, mc.cores = mc.cores, verbose = verbose)
     }
     if (saveG) {
         if (saveType == "RData") {
@@ -337,7 +350,7 @@ getG <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL, cente
 }
 
 
-getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), centerCol = FALSE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), centerCol = FALSE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, minVar = 1e-05, bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
     nX <- nrow(x)
     pX <- ncol(x)
 
@@ -368,8 +381,6 @@ getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), centerCol = FAL
     }
 
     G <- matrix(data = 0, nrow = n, ncol = n, dimnames = list(rownames(x)[i], rownames(x)[i]))
-
-    bufferSize <- ceiling(p / nBuffers)
 
     end <- 0
     for (k in seq_len(nBuffers)) {
@@ -438,7 +449,7 @@ getGi <- function(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), centerCol = FAL
 }
 
 
-getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, scaleCol = TRUE, scales, scaleG = TRUE, minVar = 1e-05, nBuffers = ceiling(ncol(x) / 10000), nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, scaleCol = TRUE, scales, scaleG = TRUE, minVar = 1e-05, bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     nX <- nrow(x)
     pX <- ncol(x)
@@ -472,8 +483,6 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, s
     K <- 0
 
     G <- matrix(data = 0, nrow = n1, ncol = n2, dimnames = list(rownames(x)[i1], rownames(x)[i2]))
-
-    bufferSize <- ceiling(p / nBuffers)
 
     end <- 0
     for (k in seq_len(nBuffers)) {
@@ -560,8 +569,12 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, s
 #' @param vmode vmode of \code{ff} objects.
 #' @param saveRData Whether to save an RData file to easily reload
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}
-#' @param nBuffers The number of columns that are processed at a time.
-#' @param bufferSize The number of columns that are processed at a time.
+#' @param bufferSize The number of columns of \code{x} that are brought into
+#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#'   \code{NULL}, all elements of \code{j} are used.
+#' @param nBuffers The number of partitions of the columns of \code{x} that are
+#'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+#'   both parameters are \code{NULL}, all elements of \code{j} are used.
 #' @param nTasks The number of chunks that each chunk is split into for
 #'   processing in parallel.
 #' @param mc.cores The number of cores (passed to
@@ -569,7 +582,7 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, s
 #' @param verbose If TRUE more messages are printed.
 #' @return A positive semi-definite symmetric numeric matrix.
 #' @export
-getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, folder = randomString(), vmode = "double", saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
+getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL, scaleG = TRUE, folder = randomString(), vmode = "double", saveRData = TRUE, bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1, verbose = TRUE) {
 
     timeIn <- proc.time()[3]
 
@@ -600,6 +613,15 @@ getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), cente
         if ((min(j) < 1) | (max(j) > pX)) {
             stop("Index out of bounds")
         }
+    }
+
+    if (is.null(bufferSize) && is.null(nBuffers)) {
+        bufferSize <- n
+        nBuffers <- 1
+    } else if (is.null(bufferSize) && !is.null(nBuffers)) {
+        bufferSize <- ceiling(n / nBuffers)
+    } else {
+        nBuffers <- ceiling(n / bufferSize)
     }
 
     if ((centerCol | scaleCol) & (is.null(centers) | is.null(scales))) {
@@ -634,9 +656,6 @@ getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), cente
         scales <- rep(1, p)
     }
 
-    if (is.null(bufferSize)) {
-        bufferSize <- ceiling(n / nBuffers)
-    }
     chunkIndex <- cbind(i, ceiling(seq_len(n) / bufferSize))
 
     nFiles <- nBuffers * (nBuffers + 1) / 2

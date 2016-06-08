@@ -8,8 +8,8 @@ creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 getG.symDMatrix(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
   centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL,
   scaleG = TRUE, folder = randomString(), vmode = "double",
-  saveRData = TRUE, nBuffers = 5, bufferSize = NULL, nTasks = mc.cores,
-  mc.cores = 1, verbose = TRUE)
+  saveRData = TRUE, bufferSize = NULL, nBuffers = NULL,
+  nTasks = mc.cores, mc.cores = 1, verbose = TRUE)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
@@ -41,9 +41,13 @@ xx'.}
 \item{saveRData}{Whether to save an RData file to easily reload
 \code{\link[=symDMatrix-class]{symDMatrix}}}
 
-\item{nBuffers}{The number of columns that are processed at a time.}
+\item{bufferSize}{The number of columns of \code{x} that are brought into
+RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\code{NULL}, all elements of \code{j} are used.}
 
-\item{bufferSize}{The number of columns that are processed at a time.}
+\item{nBuffers}{The number of partitions of the columns of \code{x} that are
+brought into RAM for processing. Is overwritten by \code{bufferSize}. If
+both parameters are \code{NULL}, all elements of \code{j} are used.}
 
 \item{nTasks}{The number of chunks that each chunk is split into for
 processing in parallel.}
