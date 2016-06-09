@@ -53,7 +53,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>GWAS(formula, data, method, i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), verbose&nbsp;=&nbsp;FALSE, chunkSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
+    <pre><div>GWAS(formula, data, method, i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), bufferSize&nbsp;=&nbsp;NULL, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;1, verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -74,17 +74,22 @@ By default, all rows are used.</dd>
       <dt>j</dt>
       <dd>(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE more messages are printed.</dd>
-      <dt>chunkSize</dt>
-      <dd>Represents the number of columns of <code>@geno</code> that are
-brought into RAM for processing (5000 by default).</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of columns of <code>data</code> that are brought into
+RAM for processing. Overwrites <code>nBuffers</code>. If both parameters are
+<code>NULL</code>, all elements in <code>j</code> are used.</dd>
+      <dt>nBuffers</dt>
+      <dd>The number of partitions of the columns of <code>data</code> that
+are brought into RAM for processing. Is overwritten by <code>bufferSize</code>.
+If both parameters are <code>NULL</code>, all elements in <code>j</code> are used.</dd>
       <dt>nTasks</dt>
       <dd>The number of submatrices of <code>X</code> to be processed in
 parallel.</dd>
-      <dt>mc.cores</dt>
+      <dt>nCores</dt>
       <dd>The number of cores (passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+      <dt>verbose</dt>
+      <dd>If TRUE more messages are printed.</dd>
       <dt>...</dt>
       <dd>Additional arguments for chunkedApply and regression method.</dd>
     </dl>
