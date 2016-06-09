@@ -4,7 +4,7 @@
 \alias{tcrossprod.parallel}
 \title{Computes tcrossprod (xy' or xx') in parallel.}
 \usage{
-tcrossprod.parallel(x, y = NULL, nTasks = mc.cores, mc.cores = 1)
+tcrossprod.parallel(x, y = NULL, nTasks = nCores, nCores = 1)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
@@ -14,7 +14,7 @@ tcrossprod.parallel(x, y = NULL, nTasks = mc.cores, mc.cores = 1)
 
 \item{nTasks}{The number of chunks used when X and y are partitioned.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 }
 \value{

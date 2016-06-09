@@ -8,8 +8,8 @@ creating a \code{\link[=symDMatrix-class]{symDMatrix}}.}
 getG.symDMatrix(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
   centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL,
   scaleG = TRUE, folder = randomString(), vmode = "double",
-  saveRData = TRUE, bufferSize = NULL, nBuffers = NULL,
-  nTasks = mc.cores, mc.cores = 1, verbose = TRUE)
+  saveRData = TRUE, bufferSize = NULL, nBuffers = NULL, nTasks = nCores,
+  nCores = 1, verbose = TRUE)
 }
 \arguments{
 \item{X}{A matrix-like object, typically \code{@geno} of a
@@ -52,7 +52,7 @@ both parameters are \code{NULL}, all elements of \code{j} are used.}
 \item{nTasks}{The number of chunks that each chunk is split into for
 processing in parallel.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{verbose}{If TRUE more messages are printed.}

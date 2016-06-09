@@ -7,7 +7,7 @@
 \usage{
 GWAS(formula, data, method, i = seq_len(nrow(data@geno)),
   j = seq_len(ncol(data@geno)), bufferSize = NULL, nBuffers = NULL,
-  nTasks = mc.cores, mc.cores = 1, verbose = FALSE, ...)
+  nTasks = nCores, nCores = 1, verbose = FALSE, ...)
 }
 \arguments{
 \item{formula}{A formula (e.g. weight~sex+age) with the response on the
@@ -38,7 +38,7 @@ both parameters are \code{NULL}, all elements in \code{j} are used.}
 \item{nTasks}{The number of submatrices of \code{X} to be processed in
 parallel.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{verbose}{If TRUE more messages are printed.}

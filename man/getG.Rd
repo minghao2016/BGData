@@ -7,8 +7,8 @@
 getG(x, i = seq_len(nrow(x)), j = seq_len(ncol(x)), i2 = NULL,
   centerCol = TRUE, centers = NULL, scaleCol = TRUE, scales = NULL,
   scaleG = TRUE, minVar = 1e-05, saveG = FALSE, saveType = "RData",
-  saveName = "Gij", bufferSize = NULL, nBuffers = NULL,
-  nTasks = mc.cores, mc.cores = 1, verbose = TRUE)
+  saveName = "Gij", bufferSize = NULL, nBuffers = NULL, nTasks = nCores,
+  nCores = 1, verbose = TRUE)
 }
 \arguments{
 \item{x}{A matrix-like object, typically \code{@geno} of a
@@ -57,7 +57,7 @@ both parameters are \code{NULL}, all columns of \code{x} are used.}
 \item{nTasks}{The number of chunks that each chunk is split into for
 processing in parallel.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{verbose}{If TRUE more messages are printed.}

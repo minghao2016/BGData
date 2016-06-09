@@ -4,7 +4,7 @@
 \alias{parallelApply}
 \title{Applies a function on each row or column of a matrix in parallel.}
 \usage{
-parallelApply(X, MARGIN, FUN, nTasks = mc.cores, mc.cores = 1, ...)
+parallelApply(X, MARGIN, FUN, nTasks = nCores, nCores = 1, ...)
 }
 \arguments{
 \item{X}{A matrix.}
@@ -17,7 +17,7 @@ indicates rows, 2 indicates columns.}
 \item{nTasks}{The number of submatrices of \code{X} to be processed in
 parallel.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{...}{Additional arguments to be passed to \code{apply}.}
@@ -25,11 +25,11 @@ parallel.}
 \description{
 The input matrix \code{X} is broken into \code{nTasks} chunks and passed to
 \code{\link[parallel]{mclapply}}. The number of cores can be configured using
-\code{mc.cores}.
+\code{nCores}.
 }
 \details{
 \code{nTasks} has to be chosen carefully to avoid running out of memory. As a
-rule of thumb, at least around \code{object_size(X) + (mc.cores *
+rule of thumb, at least around \code{object_size(X) + (nCores *
 (object_size(X) / nTasks)) + object_size(result)} MB of total memory will be
 needed, not including potential copies of your data that might be created
 (for example \code{lsfit} runs \code{cbind(1, X)}). Therefore, for 20 nodes

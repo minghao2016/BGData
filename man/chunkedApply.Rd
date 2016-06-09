@@ -6,7 +6,7 @@
 function on each row or column of a matrix in parallel.}
 \usage{
 chunkedApply(X, MARGIN, FUN, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
-  bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1,
+  bufferSize = NULL, nBuffers = NULL, nTasks = nCores, nCores = 1,
   verbose = FALSE, ...)
 }
 \arguments{
@@ -36,7 +36,7 @@ that are brought into RAM for processing. Is overwritten by
 \item{nTasks}{The number of submatrices of each buffered subset of \code{X}
 to be processed in parallel.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{verbose}{Whether to print additional information.}
@@ -46,7 +46,7 @@ to be processed in parallel.}
 \description{
 \code{bufferSize} and \code{nTasks} have to be chosen carefully to avoid
 running out of memory. As a rule of thumb, at least around
-\code{object_size(buffer) + (mc.cores * (object_size(buffer) / nTasks)) +
+\code{object_size(buffer) + (nCores * (object_size(buffer) / nTasks)) +
 object_size(result)} MB of total memory will be needed, not including
 potential copies of your data that might be created (for example \code{lsfit}
 runs \code{cbind(1, X)}). Therefore, for 20 nodes and 20 tasks you will need

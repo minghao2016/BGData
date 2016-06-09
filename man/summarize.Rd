@@ -5,7 +5,7 @@
 \title{Calculates frequencies of missing values and alleles.}
 \usage{
 summarize(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)),
-  bufferSize = NULL, nBuffers = NULL, nTasks = mc.cores, mc.cores = 1,
+  bufferSize = NULL, nBuffers = NULL, nTasks = nCores, nCores = 1,
   verbose = FALSE)
 }
 \arguments{
@@ -29,7 +29,7 @@ both parameters are \code{NULL}, all elements in \code{j} are used.}
 \item{nTasks}{Represents the number of parallel tasks each buffer is split
 into.}
 
-\item{mc.cores}{The number of cores (passed to
+\item{nCores}{The number of cores (passed to
 \code{\link[parallel]{mclapply}}).}
 
 \item{verbose}{If TRUE more messages are printed.}
