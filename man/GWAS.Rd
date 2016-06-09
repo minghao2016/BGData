@@ -32,8 +32,8 @@ RAM for processing. Overwrites \code{nBuffers}. If both parameters are
 \code{NULL}, all elements in \code{j} are used.}
 
 \item{nBuffers}{The number of partitions of the columns of \code{data} that
-are brought into RAM for processing. Is overwritten by \code{bufferSize}. If
-both parameters are \code{NULL}, all elements in \code{j} are used.}
+are brought into RAM for processing. Is overwritten by \code{bufferSize}.
+If both parameters are \code{NULL}, all elements in \code{j} are used.}
 
 \item{nTasks}{The number of submatrices of \code{X} to be processed in
 parallel.}

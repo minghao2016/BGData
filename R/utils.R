@@ -309,8 +309,8 @@ tcrossprod.parallel <- function(x, y = NULL, nTasks = nCores, nCores = 1) {
 #'   \code{RData} or \code{ff}.
 #' @param saveName Name without extension to save genomic relationship matrix
 #'   with.
-#' @param bufferSize The number of columns of \code{x} that are brought into
-#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#' @param bufferSize The number of columns of \code{x} that are brought into RAM
+#'   for processing. Overwrites \code{nBuffers}. If both parameters are
 #'   \code{NULL}, all columns of \code{x} are used.
 #' @param nBuffers The number of partitions of the columns of \code{x} that are
 #'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If
@@ -569,8 +569,8 @@ getGij <- function(x, i1, i2, j = seq_len(ncol(x)), centerCol = TRUE, centers, s
 #' @param vmode vmode of \code{ff} objects.
 #' @param saveRData Whether to save an RData file to easily reload
 #'   \code{\link[=symDMatrix-class]{symDMatrix}}
-#' @param bufferSize The number of columns of \code{x} that are brought into
-#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#' @param bufferSize The number of columns of \code{x} that are brought into RAM
+#'   for processing. Overwrites \code{nBuffers}. If both parameters are
 #'   \code{NULL}, all elements of \code{j} are used.
 #' @param nBuffers The number of partitions of the columns of \code{x} that are
 #'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If
@@ -763,8 +763,8 @@ getG.symDMatrix <- function(X, i = seq_len(nrow(X)), j = seq_len(ncol(X)), cente
 #'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
 #'   \code{NULL}, all elements in \code{j} are used.
 #' @param nBuffers The number of partitions of the columns of \code{data} that
-#'   are brought into RAM for processing. Is overwritten by \code{bufferSize}. If
-#'   both parameters are \code{NULL}, all elements in \code{j} are used.
+#'   are brought into RAM for processing. Is overwritten by \code{bufferSize}.
+#'   If both parameters are \code{NULL}, all elements in \code{j} are used.
 #' @param nTasks The number of submatrices of \code{X} to be processed in
 #'   parallel.
 #' @param nCores The number of cores (passed to
@@ -903,8 +903,8 @@ getCoefficients.lmerMod <- function(x) {
 #'   By default, all rows are used.
 #' @param j (integer, boolean or character) Indicates which columns should be
 #'   used. By default, all columns are used.
-#' @param bufferSize The number of columns of \code{X} that are brought into
-#'   RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+#' @param bufferSize The number of columns of \code{X} that are brought into RAM
+#'   for processing. Overwrites \code{nBuffers}. If both parameters are
 #'   \code{NULL}, all elements in \code{j} are used.
 #' @param nBuffers The number of partitions of the columns of \code{X} that are
 #'   brought into RAM for processing. Is overwritten by \code{bufferSize}. If

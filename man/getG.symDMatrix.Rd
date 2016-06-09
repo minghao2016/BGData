@@ -41,8 +41,8 @@ xx'.}
 \item{saveRData}{Whether to save an RData file to easily reload
 \code{\link[=symDMatrix-class]{symDMatrix}}}
 
-\item{bufferSize}{The number of columns of \code{x} that are brought into
-RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\item{bufferSize}{The number of columns of \code{x} that are brought into RAM
+for processing. Overwrites \code{nBuffers}. If both parameters are
 \code{NULL}, all elements of \code{j} are used.}
 
 \item{nBuffers}{The number of partitions of the columns of \code{x} that are

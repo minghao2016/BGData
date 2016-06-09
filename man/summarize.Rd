@@ -18,8 +18,8 @@ By default, all rows are used.}
 \item{j}{(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.}
 
-\item{bufferSize}{The number of columns of \code{X} that are brought into
-RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\item{bufferSize}{The number of columns of \code{X} that are brought into RAM
+for processing. Overwrites \code{nBuffers}. If both parameters are
 \code{NULL}, all elements in \code{j} are used.}
 
 \item{nBuffers}{The number of partitions of the columns of \code{X} that are

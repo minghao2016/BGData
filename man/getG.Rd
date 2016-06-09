@@ -46,8 +46,8 @@ the computation (only if \code{scaleCol} is set).}
 \item{saveName}{Name without extension to save genomic relationship matrix
 with.}
 
-\item{bufferSize}{The number of columns of \code{x} that are brought into
-RAM for processing. Overwrites \code{nBuffers}. If both parameters are
+\item{bufferSize}{The number of columns of \code{x} that are brought into RAM
+for processing. Overwrites \code{nBuffers}. If both parameters are
 \code{NULL}, all columns of \code{x} are used.}
 
 \item{nBuffers}{The number of partitions of the columns of \code{x} that are
