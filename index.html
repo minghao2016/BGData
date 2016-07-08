@@ -53,6 +53,8 @@
 
 <p><a href="https://travis-ci.org/QuantGen/BGData"><img src="https://travis-ci.org/QuantGen/BGData.svg?branch=master" alt="Travis-CI Build Status"/></a></p>
 
+<p>Contact:     <a href="mailto:gruenebe@msu.edu">gruenebe@msu.edu</a>   <a href="mailto:gustavoc@msu.edu">gustavoc@msu.edu</a></p>
+
 <p>Genetic data can be very large and holding data in RAM is often not feasible. One approach to overcome this restriction are <a href="http://en.wikipedia.org/wiki/Memory-mapped_file">memory mapped files</a> that store the actual data on the hard drive and only read in smaller chunks when they are needed.</p>
 
 <p>The <a href="http://cran.r-project.org/web/packages/ff/index.html">ff package for R</a> implements memory mapped arrays and provides a very fast implementation of indexing operations, which allows accessing cells of the array almost at the same speed as accessing those cells in a regular matrix object that is held in RAM. However, with <code>ff</code> the array size is limited to the size of an integer; with genomic data we often exceed this.</p>
