@@ -53,55 +53,51 @@ creating a <code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG.symDMatrix(X, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), centerCol&nbsp;=&nbsp;TRUE, centers&nbsp;=&nbsp;NULL, scaleCol&nbsp;=&nbsp;TRUE, scales&nbsp;=&nbsp;NULL, scaleG&nbsp;=&nbsp;TRUE, folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", saveRData&nbsp;=&nbsp;TRUE, bufferSize&nbsp;=&nbsp;NULL, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;1, verbose&nbsp;=&nbsp;TRUE)</div></pre>
+    <pre><div>getG.symDMatrix(X, nChunks&nbsp;=&nbsp;5, chunkSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, nChunks2&nbsp;=&nbsp;parallel::detectCores(), folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)))</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
       <dd>A matrix-like object, typically <code>@geno</code> of a
 <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
+      <dt>nChunks</dt>
+      <dd>The number of columns that are processed at a time.</dd>
+      <dt>chunkSize</dt>
+      <dd>The number of columns that are processed at a time.</dd>
+      <dt>centers</dt>
+      <dd>Precomputed centers.</dd>
+      <dt>scales</dt>
+      <dd>Precomputed scales.</dd>
+      <dt>centerCol</dt>
+      <dd>TRUE/FALSE whether columns must be centered before computing
+xx'.</dd>
+      <dt>scaleCol</dt>
+      <dd>TRUE/FALSE whether columns must be scaled before computing
+xx'.</dd>
+      <dt>scaleG</dt>
+      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
+      <dt>nChunks2</dt>
+      <dd>The number of chunks that each chunk is split into for
+processing in parallel.</dd>
+      <dt>folder</dt>
+      <dd>Folder in which to save the
+<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code>.</dd>
+      <dt>vmode</dt>
+      <dd>vmode of <code>ff</code> objects.</dd>
+      <dt>verbose</dt>
+      <dd>If TRUE more messages are printed.</dd>
+      <dt>saveRData</dt>
+      <dd>Whether to save an RData file to easily reload
+<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code></dd>
+      <dt>mc.cores</dt>
+      <dd>The number of cores (passed to
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
       <dt>i</dt>
       <dd>(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.</dd>
       <dt>j</dt>
       <dd>(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.</dd>
-      <dt>centerCol</dt>
-      <dd>TRUE/FALSE whether columns must be centered before computing
-xx'.</dd>
-      <dt>centers</dt>
-      <dd>Precomputed centers.</dd>
-      <dt>scaleCol</dt>
-      <dd>TRUE/FALSE whether columns must be scaled before computing
-xx'.</dd>
-      <dt>scales</dt>
-      <dd>Precomputed scales.</dd>
-      <dt>scaleG</dt>
-      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
-      <dt>folder</dt>
-      <dd>Folder in which to save the
-<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code>.</dd>
-      <dt>vmode</dt>
-      <dd>vmode of <code>ff</code> objects.</dd>
-      <dt>saveRData</dt>
-      <dd>Whether to save an RData file to easily reload
-<code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code></dd>
-      <dt>bufferSize</dt>
-      <dd>The number of columns of <code>x</code> that are brought into RAM
-for processing. Overwrites <code>nBuffers</code>. If both parameters are
-<code>NULL</code>, all elements of <code>j</code> are used.</dd>
-      <dt>nBuffers</dt>
-      <dd>The number of partitions of the columns of <code>x</code> that are
-brought into RAM for processing. Is overwritten by <code>bufferSize</code>. If
-both parameters are <code>NULL</code>, all elements of <code>j</code> are used.</dd>
-      <dt>nTasks</dt>
-      <dd>The number of chunks that each chunk is split into for
-processing in parallel.</dd>
-      <dt>nCores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE more messages are printed.</dd>
     </dl>
     
     <div class="Value">

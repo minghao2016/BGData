@@ -53,7 +53,7 @@ function on each row or column of a matrix in parallel.</h1>
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>chunkedApply(X, MARGIN, FUN, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;NULL, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;1, verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
+    <pre><div>chunkedApply(X, MARGIN, FUN, bufferSize, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -65,25 +65,19 @@ function on each row or column of a matrix in parallel.</h1>
 indicates rows, 2 indicates columns.</dd>
       <dt>FUN</dt>
       <dd>The function to be applied.</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of rows or columns of <code>X</code> that are brought
+into memory for processing.</dd>
       <dt>i</dt>
       <dd>(integer, boolean or character) Indicates which rows should be used.
 By default, all rows are used.</dd>
       <dt>j</dt>
       <dd>(integer, boolean or character) Indicates which columns should be
 used. By default, all columns are used.</dd>
-      <dt>bufferSize</dt>
-      <dd>The number of rows or columns of <code>X</code> that are brought
-into RAM for processing. Overwrites <code>nBuffers</code>. If both parameters are
-<code>NULL</code>, all elements in <code>i</code> or <code>j</code> are used.</dd>
-      <dt>nBuffers</dt>
-      <dd>The number of partitions of the rows or columns of <code>X</code>
-that are brought into RAM for processing. Is overwritten by
-<code>bufferSize</code>. If both parameters are <code>NULL</code>, all elements in
-<code>i</code> or <code>j</code> are used.</dd>
       <dt>nTasks</dt>
       <dd>The number of submatrices of each buffered subset of <code>X</code>
 to be processed in parallel.</dd>
-      <dt>nCores</dt>
+      <dt>mc.cores</dt>
       <dd>The number of cores (passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
       <dt>verbose</dt>
@@ -97,7 +91,7 @@ to be processed in parallel.</dd>
 
       <p><code>bufferSize</code> and <code>nTasks</code> have to be chosen carefully to avoid
 running out of memory. As a rule of thumb, at least around
-<code>object_size(buffer) + (nCores * (object_size(buffer) / nTasks)) +
+<code>object_size(buffer) + (mc.cores * (object_size(buffer) / nTasks)) +
 object_size(result)</code> MB of total memory will be needed, not including
 potential copies of your data that might be created (for example <code>lsfit</code>
 runs <code>cbind(1, X)</code>). Therefore, for 20 nodes and 20 tasks you will need
