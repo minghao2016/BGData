@@ -141,13 +141,10 @@ colnames(BGData@geno)
 dimnames(BGData@geno)
 
 # Summaries
-rowSums(BGData@geno)
-colSums(BGData@geno)
-rowMeans(BGData@geno)
-colMeans(BGData@geno)
+summarize(BGData@geno)
 
 # apply
-countNAs &lt;- apply(X=BGData@geno, MARGIN=2, FUN=function(x) sum(is.na(x)))
+countNAs &lt;- chunkedApply(X=BGData@geno, MARGIN=2, FUN=function(x) sum(is.na(x)), bufferSize = 500)
 </code></pre>
 
 <h3>Running GWASes with different regression methods</h3>
