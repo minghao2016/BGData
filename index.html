@@ -49,7 +49,7 @@
       
       <div class="row">
   <div class="span8">
-    <h1>BGData: Memory Mapped Matrices and Data-Structures for Genomic Data for R</h1>
+    <h1>BGData: A Suite of Packages for Analysis of Big Genomic Data</h1>
 
 <p><a href="https://travis-ci.org/QuantGen/BGData"><img src="https://travis-ci.org/QuantGen/BGData.svg?branch=master" alt="Travis-CI Build Status"/></a></p>
 
@@ -149,29 +149,21 @@ countNAs &lt;- chunkedApply(X=BGData@geno, MARGIN=2, FUN=function(x) sum(is.na(x
 
 <h3>Running GWASes with different regression methods</h3>
 
-<p>A data structure for genomic data is useful when defining methods that act on both phenotype and genotype information. We have implemented a <code>GWAS</code> function that supports various regression methods and plotting. The formula takes phenotypes from <code>@pheno</code> and inserts one marker at a time.</p>
+<p>A data structure for genomic data is useful when defining methods that act on both phenotype and genotype information. We have implemented a <code>GWAS</code> function that supports various regression methods. The formula takes phenotypes from <code>@pheno</code> and inserts one marker at a time.</p>
 
-<pre><code class="R"># lm (set plot=TRUE to get a Manhattan plot of the p values)
-fmLM &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter, data=BGData, method=&#39;lm&#39;, plot=T)
+<pre><code class="R"># lm
+fmLM &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter, data=BGData, method=&#39;lm&#39;)
 
-# glm (set plot=TRUE to get a Manhattan plot of the p values)
+# glm
 BGData@pheno$GENDER01 &lt;- ifelse(BGData@pheno[, &#39;GENDER&#39;] == &#39;M&#39;, 1, 0)
 fmGLM &lt;- GWAS(formula=GENDER01~Obesity.BMI, data=BGData, method=&#39;glm&#39;, family=&#39;binomial&#39;)
 
-# lmer (set plot=TRUE to get a Manhattan plot of the p values)
+# lmer
 fmLMER &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter+(1|cage), data=BGData, method=&#39;lmer&#39;)
 
-# SKAT (set plot=TRUE to get a Manhattan plot of the p values)
+# SKAT
 groups &lt;- ceiling(1:ncol(BGData@geno) / 5)
 fmSKAT &lt;- GWAS(formula=Obesity.BMI~GENDER+Litter, data=BGData, method=&#39;SKAT&#39;, groups=groups)
-</code></pre>
-
-<h3>Adding columns to phenotype data</h3>
-
-<p><code>@pheno</code> is stored as a regular data frame and can be modified. These changes will also be available in functions such as <code>GWAS</code>.</p>
-
-<pre><code class="R">newPheno &lt;- data.frame(SUBJECT.NAME=BGData@pheno$SUBJECT.NAME, NEWCOLUMN=1:nrow(BGData@pheno))
-BGData@pheno &lt;- merge(BGData@pheno, newPheno, by=&#39;SUBJECT.NAME&#39;, sort=FALSE)
 </code></pre>
 
 <h3>Generating the G Matrix</h3>
