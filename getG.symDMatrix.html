@@ -53,17 +53,17 @@ creating a <code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG.symDMatrix(X, nChunks&nbsp;=&nbsp;5, chunkSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, nChunks2&nbsp;=&nbsp;parallel::detectCores(), folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)))</div></pre>
+    <pre><div>getG.symDMatrix(X, nBlocks&nbsp;=&nbsp;5, blockSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, nChunks2&nbsp;=&nbsp;parallel::detectCores(), folder&nbsp;=&nbsp;randomString(), vmode&nbsp;=&nbsp;"double", verbose&nbsp;=&nbsp;TRUE, saveRData&nbsp;=&nbsp;TRUE, mc.cores&nbsp;=&nbsp;parallel::detectCores(), i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)))</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
       <dd>A matrix-like object, typically <code>@geno</code> of a
 <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
-      <dt>nChunks</dt>
-      <dd>The number of columns that are processed at a time.</dd>
-      <dt>chunkSize</dt>
-      <dd>The number of columns that are processed at a time.</dd>
+      <dt>nBlocks</dt>
+      <dd>The number of blocks.</dd>
+      <dt>blockSize</dt>
+      <dd>The number of columns of a block (if NULL inferred from block).</dd>
       <dt>centers</dt>
       <dd>Precomputed centers.</dd>
       <dt>scales</dt>
@@ -77,7 +77,7 @@ xx'.</dd>
       <dt>scaleG</dt>
       <dd>TRUE/FALSE whether xx' must be scaled.</dd>
       <dt>nChunks2</dt>
-      <dd>The number of chunks that each chunk is split into for
+      <dd>The number of chunks that each block is split into for
 processing in parallel.</dd>
       <dt>folder</dt>
       <dd>Folder in which to save the
