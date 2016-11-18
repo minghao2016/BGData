@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>crossprod.parallel(x, y&nbsp;=&nbsp;NULL, nChunks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>crossprod.parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -61,8 +61,9 @@
 <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
       <dt>y</dt>
       <dd>vector or matrix-like object. NULL by default.</dd>
-      <dt>nChunks</dt>
-      <dd>The number of chunks used when X and y are partitioned.</dd>
+      <dt>nTasks</dt>
+      <dd>The number of tasks the problem should be broken into to be
+distributed among <code>mc.cores</code> cores.</dd>
       <dt>mc.cores</dt>
       <dd>The number of cores (passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>

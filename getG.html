@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG(x, nChunks&nbsp;=&nbsp;ceiling(ncol(x)/10000), scaleCol&nbsp;=&nbsp;TRUE, centerCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, verbose&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(x)), j&nbsp;=&nbsp;seq_len(ncol(x)), i2&nbsp;=&nbsp;NULL, minVar&nbsp;=&nbsp;1e-05, nChunks2&nbsp;=&nbsp;parallel::detectCores(), scales&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, saveG&nbsp;=&nbsp;FALSE, saveType&nbsp;=&nbsp;"RData", saveName&nbsp;=&nbsp;"Gij", mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>getG(x, nChunks&nbsp;=&nbsp;ceiling(ncol(x)/10000), scaleCol&nbsp;=&nbsp;TRUE, centerCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, verbose&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(x)), j&nbsp;=&nbsp;seq_len(ncol(x)), i2&nbsp;=&nbsp;NULL, minVar&nbsp;=&nbsp;1e-05, nTasks&nbsp;=&nbsp;parallel::detectCores(), scales&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, saveG&nbsp;=&nbsp;FALSE, saveType&nbsp;=&nbsp;"RData", saveName&nbsp;=&nbsp;"Gij", mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -83,9 +83,9 @@ to divide matrix into blocks.</dd>
       <dt>minVar</dt>
       <dd>Columns with variance lower than this value will not be used in
 the computation (only if <code>scaleCol</code> is set).</dd>
-      <dt>nChunks2</dt>
-      <dd>The number of chunks that each chunk is split into for
-processing in parallel.</dd>
+      <dt>nTasks</dt>
+      <dd>The number of tasks the problem should be broken into to be
+distributed among <code>mc.cores</code> cores.</dd>
       <dt>scales</dt>
       <dd>Precomputed scales if i2 is used.</dd>
       <dt>centers</dt>

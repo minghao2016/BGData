@@ -80,8 +80,8 @@ used. By default, all columns are used.</dd>
       <dd>Represents the number of columns of <code>@geno</code> that are
 brought into RAM for processing (5000 by default).</dd>
       <dt>nTasks</dt>
-      <dd>The number of submatrices of <code>X</code> to be processed in
-parallel.</dd>
+      <dd>The number of tasks the problem should be broken into to be
+distributed among <code>mc.cores</code> cores.</dd>
       <dt>mc.cores</dt>
       <dd>The number of cores (passed to
 <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
