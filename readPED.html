@@ -55,7 +55,7 @@ memory-mapped <code>ff</code> nodes.</h1>
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>readPED(fileIn, header, dataType, n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), verbose&nbsp;=&nbsp;FALSE, nNodes&nbsp;=&nbsp;NULL, linked.by&nbsp;=&nbsp;"rows", folderOut&nbsp;=&nbsp;paste("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn)), sep&nbsp;=&nbsp;""), dimorder&nbsp;=&nbsp;if (linked.by == "rows") 2:1 else 1:2)</div></pre>
+    <pre><div>readPED(fileIn, header, dataType, n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, sep&nbsp;=&nbsp;"", na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), verbose&nbsp;=&nbsp;FALSE, nNodes&nbsp;=&nbsp;NULL, linked.by&nbsp;=&nbsp;"rows", folderOut&nbsp;=&nbsp;paste("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn)), sep&nbsp;=&nbsp;""), dimorder&nbsp;=&nbsp;if (linked.by == "rows") 2:1 else 1:2)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
@@ -72,6 +72,11 @@ into a raw file.</dd>
       <dd>The number of individuals.</dd>
       <dt>p</dt>
       <dd>The number of markers.</dd>
+      <dt>sep</dt>
+      <dd>The field separator character. Values on each line of the file
+are separated by this character. If <code>sep = ""</code> (the default for
+<code>readPED</code>) the separator is "white space", that is one or more spaces,
+tabs, newlines or carriage returns.</dd>
       <dt>na.strings</dt>
       <dd>The character string used in the plaintext file to denote
 missing value.</dd>
