@@ -47,8 +47,7 @@
         
       </header>
       
-      <h1>Converts a <code>BEDMatrix</code> object to a <code><a href='BGData-class.html'>BGData</a></code>
-object.</h1>
+      <h1>Converts Other Objects to BGData Objects.</h1>
 
 <div class="row">
   <div class="span8">
@@ -58,22 +57,20 @@ object.</h1>
     <h2>Arguments</h2>
     <dl>
       <dt>x</dt>
-      <dd>A <code>BEDMatrix</code> object.</dd>
+      <dd>A <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> object.</dd>
       <dt>alternatePhenotypeFile</dt>
-      <dd>Path to an
-<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate
- phenotype file</a>.</dd>
+      <dd>Path to an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>.</dd>
       <dt>...</dt>
-      <dd>Additional arguments to the <code>read.table</code> or <code>fread</code>
-call (if data.table package is installed) call to parse the alternate pheno
-file.</dd>
+      <dd>Additional arguments to the <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>utils::read.table()</a></code> or
+<code><a href='http://www.inside-r.org/packages/cran/data.table/docs/fread'>data.table::fread()</a></code> call (if data.table package is installed) call to
+parse the alternate pheno file.</dd>
     </dl>
     
     <div class="Value">
       <h2>Value</h2>
 
       <p><dl>
-A <code><a href='BGData-class.html'>BGData</a></code> object.
+A BGData object.
 </dl></p>
   
     </div>
@@ -92,12 +89,10 @@ rownames of <code>@geno</code> will be generated.</p>
     <div class="Details">
       <h2>Details</h2>
 
-      <p>PED only allows for a single phenotype. If more phenotypes are required it is
-possible to store them in an
-<a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate
-phenotype file</a>. The path to such a file can be provided with
-<code>alternatePhenotypeFile</code> and will be merged with the data in the
-<code>@pheno</code> slot.</p>
+      <p>PED only allows for a single phenotype. If more phenotypes are required it
+is possible to store them in an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>. The path
+to such a file can be provided with <code>alternatePhenotypeFile</code> and will be
+merged with the data in the <code>@pheno</code> slot.</p>
   
     </div>
       </div>
@@ -109,6 +104,10 @@ phenotype file</a>. The path to such a file can be provided with
       
     </ul> -->
       
+    <h2>See also</h2>
+    
+<code><a href='readPED.html'>readPED()</a></code> to convert text files to BGData objects.
+
         
   </div>
 </div>

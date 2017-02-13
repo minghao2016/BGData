@@ -47,60 +47,59 @@
         
       </header>
       
-      <h1>Computes a genomic relationship matrix G=xx'.</h1>
+      <h1>Computes a Genomic Relationship Matrix.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG(x, nChunks&nbsp;=&nbsp;ceiling(ncol(x)/10000), scaleCol&nbsp;=&nbsp;TRUE, centerCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, verbose&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(x)), j&nbsp;=&nbsp;seq_len(ncol(x)), i2&nbsp;=&nbsp;NULL, minVar&nbsp;=&nbsp;1e-05, nTasks&nbsp;=&nbsp;parallel::detectCores(), scales&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, saveG&nbsp;=&nbsp;FALSE, saveType&nbsp;=&nbsp;"RData", saveName&nbsp;=&nbsp;"Gij", mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>getG(X, center&nbsp;=&nbsp;TRUE, scale&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, minVar&nbsp;=&nbsp;1e-05, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), i2&nbsp;=&nbsp;NULL, bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;TRUE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
-      <dt>x</dt>
-      <dd>A matrix-like object, typically <code>@geno</code> of a
-<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
-      <dt>nChunks</dt>
-      <dd>The number of columns that are processed at a time.</dd>
-      <dt>scaleCol</dt>
-      <dd>TRUE/FALSE whether columns must be scaled before computing
-xx'.</dd>
-      <dt>centerCol</dt>
-      <dd>TRUE/FALSE whether columns must be centered before computing
-xx'.</dd>
+      <dt>X</dt>
+      <dd>A matrix-like object, typically <code>@geno</code> of a BGData
+object.</dd>
+      <dt>center</dt>
+      <dd>Either a logical value or a numeric vector of length equal to
+the number of columns of <code>X</code>. Numeric vector required if <code>i2</code> is used. If
+<code>FALSE</code>, no centering is done. Defaults to <code>TRUE</code>.</dd>
+      <dt>scale</dt>
+      <dd>Either a logical value or a numeric vector of length equal to
+the number of columns of <code>X</code>. Numeric vector required if <code>i2</code> is used. If
+<code>FALSE</code>, no scaling is done.  Defaults to <code>TRUE</code>.</dd>
       <dt>scaleG</dt>
-      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE more messages are printed.</dd>
-      <dt>i</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used.
-By default, all rows are used.</dd>
-      <dt>j</dt>
-      <dd>(integer, boolean or character) Indicates which columns should be
-used. By default, all columns are used.</dd>
-      <dt>i2</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used
-to divide matrix into blocks.</dd>
+      <dd>Whether XX' should be scaled. Defaults to <code>TRUE</code>.</dd>
       <dt>minVar</dt>
-      <dd>Columns with variance lower than this value will not be used in
-the computation (only if <code>scaleCol</code> is set).</dd>
+      <dd>Columns with variance lower than this value will not be used
+in the computation (only if <code>scale</code> is not <code>FALSE</code>).</dd>
+      <dt>i</dt>
+      <dd>Indicates which rows of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all rows are used.</dd>
+      <dt>j</dt>
+      <dd>Indicates which columns of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all columns are used.</dd>
+      <dt>i2</dt>
+      <dd>Indicates which rows should be used to compute a block of the
+genomic relationship matrix. Will compute XY' where X is determined by <code>i</code>
+and <code>j</code> and Y by <code>i2</code> and <code>j</code>. Can be integer, boolean, or character. If
+<code>NULL</code>, the whole genomic relationship matrix XX' is computed.  Defaults to
+<code>NULL</code>.</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of columns of <code>X</code> that are brought into RAM for
+processing. Overwrites <code>nBuffers</code>. If both parameters are <code>NULL</code>, all
+columns of <code>X</code> are used. Defaults to 5000.</dd>
+      <dt>nBuffers</dt>
+      <dd>The number of partitions of the columns of <code>X</code> that are
+brought into RAM for processing. Is overwritten by <code>bufferSize</code>. If both
+parameters are <code>NULL</code>, all columns of <code>X</code> are used. Defaults to <code>NULL</code>.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
-distributed among <code>mc.cores</code> cores.</dd>
-      <dt>scales</dt>
-      <dd>Precomputed scales if i2 is used.</dd>
-      <dt>centers</dt>
-      <dd>Precomputed centers if i2 is used.</dd>
-      <dt>saveG</dt>
-      <dd>Whether to save genomic relationship matrix into file.</dd>
-      <dt>saveType</dt>
-      <dd>File format to save genomic relationship matrix in. Either
-<code>RData</code> or <code>ff</code>.</dd>
-      <dt>saveName</dt>
-      <dd>Name without extension to save genomic relationship matrix
-with.</dd>
-      <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
+      <dt>nCores</dt>
+      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
+Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
+      <dt>verbose</dt>
+      <dd>Whether progress updates will be posted. Defaults to <code>TRUE</code>.</dd>
     </dl>
     
     <div class="Value">
@@ -115,10 +114,16 @@ A positive semi-definite symmetric numeric matrix.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Offers options for centering and scaling the columns of x before computing
-xx'. If <code>centerCol=FALSE</code>, <code>scaleCol=FALSE</code> and
-<code>scaleG=FALSE</code>, <code>getG</code> produces the same outcome than
-<code>tcrossprod</code>.</p>
+      <p>Computes a positive semi-definite symmetric genomic relation matrix G=XX'
+offering options for centering and scaling the columns of <code>X</code> beforehand.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>If <code>center = FALSE</code>, <code>scale = FALSE</code> and <code>scaleG = FALSE</code>, <code><a href='getG.html'>getG()</a></code> produces
+the same outcome than <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::tcrossprod()</a></code>.</p>
   
     </div>
       </div>

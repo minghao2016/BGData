@@ -47,64 +47,71 @@
         
       </header>
       
-      <h1>Reads chunks of data from a memory-mapped file into memory and applies a
-function on each row or column of a matrix in parallel.</h1>
+      <h1>Reads Chunks of Data from a Memory-Mapped File into Memory and Applies a
+Function on Each Row or Column of a Matrix in Parallel.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>chunkedApply(X, MARGIN, FUN, bufferSize, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
+    <pre><div>chunkedApply(X, MARGIN, FUN, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>A matrix-like object, typically <code>@geno</code> of a
-<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a BGData
+object.</dd>
       <dt>MARGIN</dt>
       <dd>The subscripts which the function will be applied over. 1
 indicates rows, 2 indicates columns.</dd>
       <dt>FUN</dt>
       <dd>The function to be applied.</dd>
-      <dt>bufferSize</dt>
-      <dd>The number of rows or columns of <code>X</code> that are brought
-into memory for processing.</dd>
       <dt>i</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used.
-By default, all rows are used.</dd>
+      <dd>Indicates which rows of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all rows are used.</dd>
       <dt>j</dt>
-      <dd>(integer, boolean or character) Indicates which columns should be
-used. By default, all columns are used.</dd>
+      <dd>Indicates which columns of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all columns are used.</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of rows or columns of <code>X</code> that are brought into
+RAM for processing. Overwrites <code>nBuffers</code>. If both parameters are <code>NULL</code>,
+all elements in <code>i</code> or <code>j</code> are used. Defaults to 5000.</dd>
+      <dt>nBuffers</dt>
+      <dd>The number of partitions of the rows or columns of <code>X</code> that
+are brought into RAM for processing. Is overwritten by <code>bufferSize</code>. If both
+parameters are <code>NULL</code>, all elements in <code>i</code> or <code>j</code> are used. Defaults to
+<code>NULL</code>.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
-distributed among <code>mc.cores</code> cores.</dd>
-      <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
+      <dt>nCores</dt>
+      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
+Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
       <dt>verbose</dt>
-      <dd>Whether to print additional information.</dd>
+      <dd>Whether progress updates will be posted. Defaults to <code>FALSE</code>.</dd>
       <dt>...</dt>
-      <dd>Additional arguments to be passed to <code>parallelApply</code>.</dd>
+      <dd>Additional arguments to be passed to <code><a href='parallelApply.html'>parallelApply()</a></code>.</dd>
     </dl>
     
     <div class="Description">
       <h2>Description</h2>
 
-      <p><code>bufferSize</code> and <code>nTasks</code> have to be chosen carefully to avoid
-running out of memory. As a rule of thumb, at least around
-<code>object_size(buffer) + (mc.cores * (object_size(buffer) / nTasks)) +
-object_size(result)</code> MB of total memory will be needed, not including
-potential copies of your data that might be created (for example <code>lsfit</code>
-runs <code>cbind(1, X)</code>). Therefore, for 20 nodes and 20 tasks you will need
-at least <code>2 * object_size(buffer)</code> MB, for 20 nodes and 40 tasks
-<code>1.5 * object_size(buffer)</code> MB, etc.</p>
+      <p>Similar to <code><a href='http://www.inside-r.org/r-doc/base/apply'>base::apply()</a></code>, but designed to bring chunks of data into memory
+and carry out operations on them in parallel. <code>nBufferSize</code> rows or columns
+of the input matrix <code>X</code> are read into memory and handed over to
+<code><a href='parallelApply.html'>parallelApply()</a></code>. This function is only useful for memory-mapped files. For
+data that is already in memory, use <code><a href='parallelApply.html'>parallelApply()</a></code> directly.</p>
   
     </div>
 
     <div class="Details">
       <h2>Details</h2>
 
-      <p>This function is only useful for memory-mapped files. For data that is
-already in memory, use <code><a href='parallelApply.html'>parallelApply</a></code> directly.</p>
+      <p><code>bufferSize</code> and <code>nTasks</code> have to be chosen carefully to avoid running out
+of memory. As a rule of thumb, at least around <code>object_size(buffer) +
+(nCores * (object_size(buffer) / nTasks)) + object_size(result)</code> MB of total
+memory will be needed, not including potential copies of your data that
+might be created (for example <code><a href='http://www.inside-r.org/r-doc/stats/lsfit'>stats::lsfit()</a></code> runs <code>cbind(1, X)</code>).
+Therefore, for 20 nodes and 20 tasks you will need at least <code>2 * object_size(buffer)</code> MB, for 20 nodes and 40 tasks <code>1.5 * object_size(buffer)</code> MB, etc.</p>
   
     </div>
       </div>
@@ -116,6 +123,11 @@ already in memory, use <code><a href='parallelApply.html'>parallelApply</a></cod
       
     </ul> -->
       
+    <h2>See also</h2>
+    
+<code><a href='parallelApply.html'>parallelApply()</a></code> if <code>X</code> is not a memory-mapped matrix or can be
+held in memory.
+
         
   </div>
 </div>

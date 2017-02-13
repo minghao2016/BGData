@@ -47,41 +47,58 @@
         
       </header>
       
-      <h1>Calculates frequencies of missing values and alleles.</h1>
+      <h1>Generates Various Summary Statistics.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>summarize(X, verbose&nbsp;=&nbsp;FALSE, bufferSize&nbsp;=&nbsp;5000, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>summarize(X, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;nCores, nBuffers&nbsp;=&nbsp;NULL, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>A matrix-like object, typically <code>@geno</code> of a
-<code><a href='BGData-class.html'>BGData</a></code> object.</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE more messages are printed.</dd>
-      <dt>bufferSize</dt>
-      <dd>Represents the number of columns of <code>@geno</code> that are
-brought into RAM for processing (5000 by default).</dd>
+      <dd>A matrix-like object, typically <code>@geno</code> of a BGData
+object.</dd>
       <dt>i</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used.
-By default, all rows are used.</dd>
+      <dd>Indicates which rows of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all rows are used.</dd>
       <dt>j</dt>
-      <dd>(integer, boolean or character) Indicates which columns should be
-used. By default, all columns are used.</dd>
+      <dd>Indicates which columns of <code>X</code> should be used. Can be integer,
+boolean, or character. By default, all columns are used.</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of columns of <code>X</code> that are brought into RAM for
+processing. Overwrites <code>nBuffers</code>. If both parameters are <code>NULL</code>, all
+elements in <code>j</code> are used. Defaults to 5000.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
-distributed among <code>mc.cores</code> cores.</dd>
-      <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
+      <dt>nBuffers</dt>
+      <dd>The number of partitions of the columns of <code>X</code> that are
+brought into RAM for processing. Is overwritten by <code>bufferSize</code>. If both
+parameters are <code>NULL</code>, all elements in <code>j</code> are used. Defaults to <code>NULL</code>.</dd>
+      <dt>nCores</dt>
+      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
+Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
+      <dt>verbose</dt>
+      <dd>Whether progress updates will be posted. Defaults to <code>FALSE</code>.</dd>
     </dl>
     
+    <div class="Value">
+      <h2>Value</h2>
+
+      <p><dl>
+A <code>data.frame</code> with three columns: <code>freq_na</code> for frequencies of
+missing values, <code>allele_freq</code> for (minor) allele frequencies, and <code>sd</code> for
+standard deviations.
+</dl></p>
+  
+    </div>
+
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Calculates frequencies of missing values and alleles.</p>
+      <p>Computes the frequency of missing values, the (minor) allele frequency, and
+standard deviation of each column of <code>X</code>.</p>
   
     </div>
       </div>

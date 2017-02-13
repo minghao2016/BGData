@@ -164,7 +164,7 @@ Formal class &quot;BGData&quot; [package &quot;BGData&quot;] with 3 slots
 
 <p>A <code>BGData</code> object can be generated from any plaintext file that stores individuals in rows, phenotypes in the first couple of columns (including an identifier for each individual), and genotypes as single allele dosage numbers in the remaining columns. This structure is intentionally similar to a <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#ped">PED file</a> that further restricts the structure of the phenotype section. The <code>mice</code> dataset that we will use as an example is only PED-like: there are more than six initial columns and the order of the columns is not according to the specification, but the BGData package is flexible enough to read it thanks to the <code>nColSkip</code> and <code>idCol</code> parameters.</p>
 
-<pre><code>&gt; bgd &lt;- readPED(fileIn = &quot;mice.raw.gz&quot;, header = TRUE, dataType= integer(), nColSkip = 17, idCol = 1)
+<pre><code>&gt; bgd &lt;- readPED(fileIn = &quot;mice.raw.gz&quot;, header = TRUE, dataType = integer(), nColSkip = 17, idCol = 1)
 </code></pre>
 
 <p>Display structure of BGData object:</p>
@@ -277,12 +277,15 @@ dimnames(bgd@geno)
 
 <p>A data structure for genomic data is useful when defining methods that act on both phenotype and genotype information. We have implemented a <code>GWAS</code> function that supports various regression methods. The formula takes phenotypes from <code>@pheno</code> and inserts one marker at a time.</p>
 
-<pre><code># lm
+<pre><code># lsfit (the default method)
+fmLM &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd)
+
+# lm
 fmLM &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = &quot;lm&quot;)
 
 # glm
 bgd@pheno$GENDER01 &lt;- ifelse(bgd@pheno$GENDER == &quot;M&quot;, 1, 0)
-fmGLM &lt;- GWAS(formula = GENDER01 ~ Obesity.BMI, data = bgd, method = &quot;glm&quot;, family=&quot;binomial&quot;)
+fmGLM &lt;- GWAS(formula = GENDER01 ~ Obesity.BMI, data = bgd, method = &quot;glm&quot;, family = &quot;binomial&quot;)
 
 # lmer
 fmLMER &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter + (1|cage), data = bgd, method = &quot;lmer&quot;)
@@ -306,7 +309,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="BGData-class.html">BGData-class</a></code>(BGData)<br />An S4 class to represent phenotype and genotype data.</li>
+        <code><a href="BGData-class.html">BGData-class</a></code>(BGData)<br />An S4 Class to Represent Phenotype and Genotype Data.</li>
     
     </ul>
     <h3>Creating a BGData object from a PED (or PED-like) file</h3>
@@ -315,13 +318,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="readPED.html">readPED</a></code><br />Creates a <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file (generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the genotypes in a <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> that contains memory-mapped <code>ff</code> nodes.</li>
-            
-      <li>
-        <code><a href="readPED.big.matrix.html">readPED.big.matrix</a></code><br />Creates a <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file (generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the genotypes in a <code><a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>big.matrix</a></code>.</li>
-            
-      <li>
-        <code><a href="readPED.matrix.html">readPED.matrix</a></code><br />Creates an <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file (generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the genotypes in an in-memory <code>matrix</code>.</li>
+        <code><a href="readPED.html">readPED</a></code>(readPED.matrix, readPED.big.matrix)<br />Creates a BGData Object From a Raw PED File or a PED-Like File.</li>
     
     </ul>
     <h3>Creating a BGData object from a BED file</h3>
@@ -331,7 +328,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="as.BGData.BEDMatrix.html">as.BGData.BEDMatrix</a></code><br />Converts a <code>BEDMatrix</code> object to a <code><a href='BGData-class.html'>BGData</a></code> object.</li>
+        <code><a href="as.BGData.BEDMatrix.html">as.BGData.BEDMatrix</a></code><br />Converts Other Objects to BGData Objects.</li>
     
     </ul>
     <h3>Creating a BGData object from a previously saved BGData object</h3>
@@ -340,7 +337,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="load.BGData.html">load.BGData</a></code><br />Loads <code><a href='BGData-class.html'>BGData</a></code> (and other) objects from .RData files.</li>
+        <code><a href="load.BGData.html">load.BGData</a></code><br />Loads BGData (and Other) Objects from .RData Files.</li>
     
     </ul>
     <h3>Creating a BGData object from arbitrary genotype/phenotype data</h3>
@@ -349,7 +346,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="initialize-BGData-method.html">initialize,BGData-method</a></code><br />Creates a new <code><a href='BGData-class.html'>BGData</a></code> instance.</li>
+        <code><a href="initialize-BGData-method.html">initialize,BGData-method</a></code><br />Creates a New BGData Instance.</li>
     
     </ul>
     <h3>Functions</h3>
@@ -358,28 +355,22 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="GWAS.html">GWAS</a></code><br />Performs single marker regressions using a <code><a href='BGData-class.html'>BGData</a></code> object.</li>
+        <code><a href="GWAS.html">GWAS</a></code><br />Performs Single Marker Regressions Using BGData Objects.</li>
             
       <li>
-        <code><a href="getG.html">getG</a></code><br />Computes a genomic relationship matrix G=xx'.</li>
+        <code><a href="getG.html">getG</a></code><br />Computes a Genomic Relationship Matrix.</li>
             
       <li>
-        <code><a href="getG.symDMatrix.html">getG.symDMatrix</a></code><br />Computes a genomic relationship matrix G=xx' without ever loading G in RAM by creating a <code><a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix</a></code>.</li>
+        <code><a href="getG.symDMatrix.html">getG.symDMatrix</a></code><br />Computes a Genomic Relationship Matrix G=xx' without Ever Loading G in RAM by Creating a symDMatrix.</li>
             
       <li>
-        <code><a href="summarize.html">summarize</a></code><br />Calculates frequencies of missing values and alleles.</li>
+        <code><a href="summarize.html">summarize</a></code><br />Generates Various Summary Statistics.</li>
             
       <li>
-        <code><a href="chunkedApply.html">chunkedApply</a></code><br />Reads chunks of data from a memory-mapped file into memory and applies a function on each row or column of a matrix in parallel.</li>
+        <code><a href="chunkedApply.html">chunkedApply</a></code><br />Reads Chunks of Data from a Memory-Mapped File into Memory and Applies a Function on Each Row or Column of a Matrix in Parallel.</li>
             
       <li>
-        <code><a href="parallelApply.html">parallelApply</a></code><br />Applies a function on each row or column of a matrix in parallel.</li>
-            
-      <li>
-        <code><a href="crossprod.parallel.html">crossprod.parallel</a></code><br />Computes crossprod (x'y or x'x) in parallel.</li>
-            
-      <li>
-        <code><a href="tcrossprod.parallel.html">tcrossprod.parallel</a></code><br />Computes tcrossprod (xy' or xx') in parallel.</li>
+        <code><a href="parallelApply.html">parallelApply</a></code><br />Applies a Function on Each Row or Column of a Matrix in Parallel.</li>
     
     </ul>
     <h3>Other</h3>
@@ -388,10 +379,16 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="as.BGData.html">as.BGData</a></code><br />S3 generic to convert other objects into <code><a href='BGData-class.html'>BGData</a></code> objects.</li>
+        <code><a href="as.BGData.html">as.BGData</a></code><br />Convert Other Objects to BGData Objects.</li>
             
       <li>
         <code><a href="BGData-package.html">BGData-package</a></code><br />BGData: Memory Mapped Matrices and Data-Structures for Genomic Data for R</li>
+            
+      <li>
+        <code><a href="crossprod_parallel.html">crossprod_parallel</a></code>(tcrossprod_parallel)<br />Computes crossprod (x'x or x'y) or tcrossprod (xx' or xy') in Parallel.</li>
+            
+      <li>
+        <code><a href="geno-class.html">geno-class</a></code><br />An Abstract S4 Class Union of Matrix-Like Types.</li>
     
     </ul>
   </div>

@@ -47,44 +47,48 @@
         
       </header>
       
-      <h1>Performs single marker regressions using a
-<code><a href='BGData-class.html'>BGData</a></code> object.</h1>
+      <h1>Performs Single Marker Regressions Using BGData Objects.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>GWAS(formula, data, method, i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), verbose&nbsp;=&nbsp;FALSE, chunkSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
+    <pre><div>GWAS(formula, data, method&nbsp;=&nbsp;"lsfit", i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>formula</dt>
       <dd>A formula (e.g. weight~sex+age) with the response on the
-left-hand side and predictors (all the covariates except the markers) on
-the right-hand side. The variables included in the formula must be in the
-<code>@pheno</code> object of the <code><a href='BGData-class.html'>BGData</a></code>.</dd>
+left-hand side and predictors (all the covariates except the markers) on the
+right-hand side. The variables included in the formula must be in the
+<code>@pheno</code> object of the BGData.</dd>
       <dt>data</dt>
-      <dd>A <code><a href='BGData-class.html'>BGData</a></code> object.</dd>
+      <dd>A BGData object.</dd>
       <dt>method</dt>
       <dd>The regression method to be used. Currently, the following
-methods are implemented: <code><a href='http://www.inside-r.org/r-doc/stats/lm'>lm</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/lmfit'>lm.fit</a></code>,
-<code><a href='http://www.inside-r.org/r-doc/stats/lsfit'>lsfit</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/glm'>glm</a></code> and <code><a href='http://www.inside-r.org/packages/cran/lme4/docs/lmer'>lmer</a></code>.</dd>
+methods are implemented: <code><a href='http://www.inside-r.org/r-doc/stats/lm'>stats::lm()</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/lmfit'>stats::lm.fit()</a></code>, <code><a href='http://www.inside-r.org/r-doc/stats/lsfit'>stats::lsfit()</a></code>,
+<code><a href='http://www.inside-r.org/r-doc/stats/glm'>stats::glm()</a></code>, <code><a href='http://www.inside-r.org/packages/cran/lme4/docs/lmer'>lme4::lmer()</a></code>, and <code><a href='http://www.inside-r.org/packages/cran/SKAT/docs/SKAT'>SKAT::SKAT()</a></code>. Defaults to <code>lsfit</code>.</dd>
       <dt>i</dt>
-      <dd>(integer, boolean or character) Indicates which rows should be used.
-By default, all rows are used.</dd>
+      <dd>Indicates which rows of <code>@geno</code> should be used. Can be integer,
+boolean, or character. By default, all rows are used.</dd>
       <dt>j</dt>
-      <dd>(integer, boolean or character) Indicates which columns should be
-used. By default, all columns are used.</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE more messages are printed.</dd>
-      <dt>chunkSize</dt>
-      <dd>Represents the number of columns of <code>@geno</code> that are
-brought into RAM for processing (5000 by default).</dd>
+      <dd>Indicates which columns of <code>@geno</code> should be used. Can be integer,
+boolean, or character. By default, all columns are used.</dd>
+      <dt>bufferSize</dt>
+      <dd>The number of columns of <code>@geno</code> that are brought into
+RAM for processing. Overwrites <code>nBuffers</code>. If both parameters are <code>NULL</code>,
+all elements in <code>j</code> are used. Defaults to 5000.</dd>
+      <dt>nBuffers</dt>
+      <dd>The number of partitions of the columns of <code>@geno</code> that are
+brought into RAM for processing. Is overwritten by <code>bufferSize</code>. If both
+parameters are <code>NULL</code>, all elements in <code>j</code> are used. Defaults to <code>NULL</code>.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
-distributed among <code>mc.cores</code> cores.</dd>
-      <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
+      <dt>nCores</dt>
+      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
+Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
+      <dt>verbose</dt>
+      <dd>Whether progress updates will be posted. Defaults to <code>FALSE</code>.</dd>
       <dt>...</dt>
       <dd>Additional arguments for chunkedApply and regression method.</dd>
     </dl>
@@ -93,7 +97,7 @@ distributed among <code>mc.cores</code> cores.</dd>
       <h2>Value</h2>
 
       <p><dl>
-Returns a matrix with estimates, SE, p-value, etc.
+A matrix with estimates, SE, p-value, etc.
 </dl></p>
   
     </div>
@@ -102,9 +106,9 @@ Returns a matrix with estimates, SE, p-value, etc.
       <h2>Description</h2>
 
       <p>Implements single marker regressions. The regression model includes all the
-covariates specified in the right-hand-side of the <code>formula</code> plus one
-column of <code>@geno</code>, one column at a time. The data from the association
-tests is obtained from a <code><a href='BGData-class.html'>BGData</a></code> object.</p>
+covariates specified in the right-hand-side of the <code>formula</code> plus one column
+of <code>@geno</code> at a time. The data from the association tests is obtained from
+a BGData object.</p>
   
     </div>
       </div>

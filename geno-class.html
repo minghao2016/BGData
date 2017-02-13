@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-<title>initialize,BGData-method. BGData 0.0.0.9000</title>
+<title>geno-class. BGData 0.0.0.9000</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="">
 
@@ -47,50 +47,34 @@
         
       </header>
       
-      <h1>Creates a New BGData Instance.</h1>
+      <h1>An Abstract S4 Class Union of Matrix-Like Types.</h1>
 
 <div class="row">
   <div class="span8">
-    <h2>Usage</h2>
-    <pre><div>"initialize"(.Object, geno, pheno, map)</div></pre>
-    
-    <h2>Arguments</h2>
-    <dl>
-      <dt>.Object</dt>
-      <dd>The BGData instance to be initialized. This argument
-is passed in by R and can be ignored, but still needs to be documented.</dd>
-      <dt>geno</dt>
-      <dd>A geno object that contains genotypes. geno is a
-class union of several matrix-like types, many of them suitable for very
-large datasets. Currently supported are <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix::LinkedMatrix</a>,
-<a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a>, <a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a>, <code>ff_matrix</code>, and
-<code>matrix</code>.</dd>
-      <dt>pheno</dt>
-      <dd>A <code>data.frame</code> that contains phenotypes. A stub that only
-contains an <code>IID</code> column populated with the rownames of <code>@geno</code> will be
-generated if missing.</dd>
-      <dt>map</dt>
-      <dd>A <code>data.frame</code> that contains a genetic map. A stub that only
-contains a <code>mrk</code> column populated with the colnames of <code>@geno</code> will be
-generated if missing.</dd>
-    </dl>
-    
+        
     <div class="Description">
       <h2>Description</h2>
 
-      <p>This method is run when a BGData object is created using
-<code>BGData(...)</code> or <code>new("BGData", ...)</code>.</p>
+      <p>geno is a class union of several matrix-like types, many of them
+suitable for very large datasets. Currently supported are
+<a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix::LinkedMatrix</a>, <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a>,
+<a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a>, <code>ff_matrix</code>, and <code>matrix</code>.</p>
   
     </div>
       </div>
   <div class="span4">
     <!-- <ul>
-      <li>initialize,BGData-method</li>
+      <li>geno-class</li>
     </ul>
     <ul>
       
     </ul> -->
       
+    <h2>See also</h2>
+    
+The <code>@geno</code> slot of BGData that accepts geno
+objects.
+
         
   </div>
 </div>

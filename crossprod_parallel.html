@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-<title>getG.symDMatrix. BGData 0.0.0.9000</title>
+<title>crossprod_parallel. BGData 0.0.0.9000</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="">
 
@@ -47,65 +47,35 @@
         
       </header>
       
-      <h1>Computes a Genomic Relationship Matrix G=xx' without Ever Loading G in RAM
-by Creating a symDMatrix.</h1>
+      <h1>Computes crossprod (x'x or x'y) or tcrossprod (xx' or xy') in Parallel.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG.symDMatrix(X, nBlocks&nbsp;=&nbsp;5, blockSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, folderOut&nbsp;=&nbsp;paste0("symDMatrix_", randomString()), vmode&nbsp;=&nbsp;"double", saveRData&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;TRUE)</div></pre>
+    <pre><div>crossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores())</div>
+<div>tcrossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
     
     <h2>Arguments</h2>
     <dl>
-      <dt>X</dt>
+      <dt>x</dt>
       <dd>A matrix-like object, typically <code>@geno</code> of a BGData
 object.</dd>
-      <dt>nBlocks</dt>
-      <dd>The number of blocks.</dd>
-      <dt>blockSize</dt>
-      <dd>The number of columns of a block (if NULL inferred from block).</dd>
-      <dt>centers</dt>
-      <dd>Precomputed centers.</dd>
-      <dt>scales</dt>
-      <dd>Precomputed scales.</dd>
-      <dt>centerCol</dt>
-      <dd>TRUE/FALSE whether columns must be centered before
-computing xx'.</dd>
-      <dt>scaleCol</dt>
-      <dd>TRUE/FALSE whether columns must be scaled before computing
-xx'.</dd>
-      <dt>scaleG</dt>
-      <dd>TRUE/FALSE whether xx' must be scaled.</dd>
-      <dt>folderOut</dt>
-      <dd>The path to the folder where to save the
-<a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix::symDMatrix</a> object. Defaults to a random string prefixed
-with "symDMatrix_".</dd>
-      <dt>vmode</dt>
-      <dd>vmode of <code>ff</code> objects.</dd>
-      <dt>saveRData</dt>
-      <dd>Whether to save an RData file to easily reload the
-<a href='http://www.inside-r.org/packages/cran/symDMatrix/docs/symDMatrix-class'>symDMatrix::symDMatrix</a> object.</dd>
-      <dt>i</dt>
-      <dd>Indicates which rows of <code>X</code> should be used. Can be integer,
-boolean, or character. By default, all rows are used.</dd>
-      <dt>j</dt>
-      <dd>Indicates which columns of <code>X</code> should be used. Can be integer,
-boolean, or character. By default, all columns are used.</dd>
+      <dt>y</dt>
+      <dd>vector or matrix-like object. <code>NULL</code> by default.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
 distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
       <dt>nCores</dt>
       <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
 Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
-      <dt>verbose</dt>
-      <dd>Whether progress updates will be posted. Defaults to <code>TRUE</code>.</dd>
     </dl>
     
     <div class="Value">
       <h2>Value</h2>
 
       <p><dl>
-A positive semi-definite symmetric numeric matrix.
+x'x or x'y (<code>crossprod_parallel</code>), or xx' or xy'
+(<code>tcrossprod_parallel</code>), depending on whether <code>y</code> is provided.
 </dl></p>
   
     </div>
@@ -113,19 +83,34 @@ A positive semi-definite symmetric numeric matrix.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Offers options for centering and scaling the columns of x before computing
-xx'.</p>
+      <p>Similar to <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::crossprod()</a></code> and <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::tcrossprod()</a></code>, but designed to
+carry out operations in parallel. The input matrix <code>x</code> (and <code>y</code> if not
+<code>NULL</code>) is broken into <code>nTasks</code> chunks and passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>
+which performs <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::crossprod()</a></code> or <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::tcrossprod()</a></code> on each chunk.
+The results are added up and returned.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>If <code>nTasks</code> is <code>1</code>, <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::crossprod()</a></code> or <code><a href='http://www.inside-r.org/r-doc/base/crossprod'>base::tcrossprod()</a></code> will be
+called directly without parallelism.</p>
   
     </div>
       </div>
   <div class="span4">
     <!-- <ul>
-      <li>getG.symDMatrix</li>
+      <li>crossprod_parallel</li><li>tcrossprod_parallel</li>
     </ul>
     <ul>
       
     </ul> -->
       
+    <h2>See also</h2>
+    
+<code><a href='getG.html'>getG()</a></code> to compute a genomic relationship matrix.
+
         
   </div>
 </div>

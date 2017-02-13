@@ -47,38 +47,39 @@
         
       </header>
       
-      <h1>Applies a function on each row or column of a matrix in parallel.</h1>
+      <h1>Applies a Function on Each Row or Column of a Matrix in Parallel.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>parallelApply(X, MARGIN, FUN, nTasks&nbsp;=&nbsp;parallel::detectCores(), mc.cores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
+    <pre><div>parallelApply(X, MARGIN, FUN, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>X</dt>
-      <dd>A matrix.</dd>
+      <dd>A matrix or matrix-like object.</dd>
       <dt>MARGIN</dt>
-      <dd>The subscripts which the function will be applied over. 1
-indicates rows, 2 indicates columns.</dd>
+      <dd>The subscripts which the function will be applied over. <code>1</code>
+indicates rows, <code>2</code> indicates columns.</dd>
       <dt>FUN</dt>
       <dd>The function to be applied.</dd>
       <dt>nTasks</dt>
       <dd>The number of tasks the problem should be broken into to be
-distributed among <code>mc.cores</code> cores.</dd>
-      <dt>mc.cores</dt>
-      <dd>The number of cores (passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>).</dd>
+distributed among <code>nCores</code> cores. Defaults to <code>nCores</code>.</dd>
+      <dt>nCores</dt>
+      <dd>The number of cores (passed to <code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code>).
+Defaults to the number of cores as detected by <code><a href='http://www.inside-r.org/r-doc/parallel/detectCores'>parallel::detectCores()</a></code>.</dd>
       <dt>...</dt>
-      <dd>Additional arguments to be passed to <code>apply</code>.</dd>
+      <dd>Additional arguments to be passed to <code><a href='http://www.inside-r.org/r-doc/base/apply'>base::apply()</a></code>.</dd>
     </dl>
     
     <div class="Description">
       <h2>Description</h2>
 
-      <p>The input matrix <code>X</code> is broken into <code>nTasks</code> chunks and passed to
-<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>mclapply</a></code>. The number of cores can be configured using
-<code>mc.cores</code>.</p>
+      <p>Similar to <code><a href='http://www.inside-r.org/r-doc/base/apply'>base::apply()</a></code>, but designed to carry out operations in
+parallel.  The input matrix <code>X</code> is broken into <code>nTasks</code> chunks and passed to
+<code><a href='http://www.inside-r.org/r-doc/parallel/mclapply'>parallel::mclapply()</a></code> which applies <code>FUN</code> on either the rows or the columns
+of each chunk.</p>
   
     </div>
 
@@ -86,15 +87,15 @@ distributed among <code>mc.cores</code> cores.</dd>
       <h2>Details</h2>
 
       <p><code>nTasks</code> has to be chosen carefully to avoid running out of memory. As a
-rule of thumb, at least around <code>object_size(X) + (mc.cores *
+rule of thumb, at least around <code>object_size(X) + (nCores *
 (object_size(X) / nTasks)) + object_size(result)</code> MB of total memory will be
 needed, not including potential copies of your data that might be created
-(for example <code>lsfit</code> runs <code>cbind(1, X)</code>). Therefore, for 20 nodes
-and 20 tasks you will need at least <code>2 * object_size(X)</code> MB, for 20
-nodes and 40 tasks <code>1.5 * object_size(X)</code> MB, etc.</p>
+(for example <code><a href='http://www.inside-r.org/r-doc/stats/lsfit'>stats::lsfit()</a></code> runs <code>cbind(1, X)</code>). Therefore, for 20 nodes
+and 20 tasks you will need at least <code>2 * object_size(X)</code> MB, for 20 nodes
+and 40 tasks <code>1.5 * object_size(X)</code> MB, etc.</p>
   
-      <p>If <code>nTasks</code> equals 1, the regular <code>apply</code> function will be called
-to preserve memory.</p>
+      <p>If <code>nTasks</code> is <code>1</code>, <code><a href='http://www.inside-r.org/r-doc/base/apply'>base::apply()</a></code> will be called directly without
+parallelism.</p>
   
     </div>
       </div>
@@ -106,6 +107,11 @@ to preserve memory.</p>
       
     </ul> -->
       
+    <h2>See also</h2>
+    
+<code><a href='chunkedApply.html'>chunkedApply()</a></code> if <code>X</code> is a memory-mapped matrix and too large to
+hold in memory.
+
         
   </div>
 </div>

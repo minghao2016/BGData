@@ -47,105 +47,155 @@
         
       </header>
       
-      <h1>Creates a <code><a href='BGData-class.html'>BGData</a></code> object from a raw PED file
-(generated with <code>--recodeA</code> in PLINK) or a PED-like file and stores the
-genotypes in a <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> that contains
-memory-mapped <code>ff</code> nodes.</h1>
+      <h1>Creates a BGData Object From a Raw PED File or a PED-Like File.</h1>
 
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>readPED(fileIn, header, dataType, n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, sep&nbsp;=&nbsp;"", na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), verbose&nbsp;=&nbsp;FALSE, nNodes&nbsp;=&nbsp;NULL, linked.by&nbsp;=&nbsp;"rows", folderOut&nbsp;=&nbsp;paste("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn)), sep&nbsp;=&nbsp;""), dimorder&nbsp;=&nbsp;if (linked.by == "rows") 2:1 else 1:2)</div></pre>
+    <pre><div>readPED(fileIn, header&nbsp;=&nbsp;TRUE, dataType&nbsp;=&nbsp;integer(), n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, sep&nbsp;=&nbsp;"", na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), nNodes&nbsp;=&nbsp;NULL, linked.by&nbsp;=&nbsp;"rows", folderOut&nbsp;=&nbsp;paste0("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn))), outputType&nbsp;=&nbsp;"byte", dimorder&nbsp;=&nbsp;if (linked.by == "rows") 2:1 else 1:2, verbose&nbsp;=&nbsp;FALSE)</div>
+<div>readPED.matrix(fileIn, header&nbsp;=&nbsp;TRUE, dataType&nbsp;=&nbsp;integer(), n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, sep&nbsp;=&nbsp;"", na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), verbose&nbsp;=&nbsp;FALSE)</div>
+<div>readPED.big.matrix(fileIn, header&nbsp;=&nbsp;TRUE, dataType&nbsp;=&nbsp;integer(), n&nbsp;=&nbsp;NULL, p&nbsp;=&nbsp;NULL, sep&nbsp;=&nbsp;"", na.strings&nbsp;=&nbsp;"NA", nColSkip&nbsp;=&nbsp;6, idCol&nbsp;=&nbsp;c(1, 2), folderOut&nbsp;=&nbsp;paste0("BGData_", sub("\\.[[:alnum:]]+$", "", basename(fileIn))), outputType&nbsp;=&nbsp;"char", verbose&nbsp;=&nbsp;FALSE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>fileIn</dt>
       <dd>The path to the plaintext file.</dd>
       <dt>header</dt>
-      <dd>If TRUE, the file contains a header.</dd>
+      <dd>Whether <code>fileIn</code> contains a header. Defaults to <code>TRUE</code>.</dd>
       <dt>dataType</dt>
-      <dd>The coding of genotypes. Use <code>integer()</code> or
-<code>double()</code> for numeric coding. Character coding is currently not
-supported: use the <code>--recodeA</code> option of PLINK to convert the PED file
-into a raw file.</dd>
+      <dd>The coding type of genotypes in <code>fileIn</code>. Use <code>integer()</code> or
+<code>double()</code> for numeric coding. Alpha-numeric coding is currently not
+supported for <code><a href='readPED.html'>readPED()</a></code> and <code><a href='readPED.html'>readPED.big.matrix()</a></code>: use the <code>--recodeA</code>
+option of PLINK to convert the PED file into a raw file. Defaults to
+<code>integer()</code>.</dd>
       <dt>n</dt>
-      <dd>The number of individuals.</dd>
+      <dd>The number of individuals. Auto-detect if <code>NULL</code>. Defaults to
+<code>NULL</code>.</dd>
       <dt>p</dt>
-      <dd>The number of markers.</dd>
+      <dd>The number of markers. Auto-detect if <code>NULL</code>. Defaults to <code>NULL</code>.</dd>
       <dt>sep</dt>
       <dd>The field separator character. Values on each line of the file
-are separated by this character. If <code>sep = ""</code> (the default for
-<code>readPED</code>) the separator is "white space", that is one or more spaces,
-tabs, newlines or carriage returns.</dd>
+are separated by this character. If <code>sep = ""</code> (the default for <code><a href='readPED.html'>readPED()</a></code>
+the separator is "white space", that is one or more spaces, tabs, newlines
+or carriage returns.</dd>
       <dt>na.strings</dt>
       <dd>The character string used in the plaintext file to denote
-missing value.</dd>
+missing value. Defaults to <code>NA</code>.</dd>
       <dt>nColSkip</dt>
       <dd>The number of columns to be skipped to reach the genotype
-information in the file.</dd>
+information in the file. Defaults to <code>6</code>.</dd>
       <dt>idCol</dt>
       <dd>The index of the ID column. If more than one index is given,
-both columns will be concatenated with "_".</dd>
-      <dt>verbose</dt>
-      <dd>If TRUE, progress updates will be posted.</dd>
+both columns will be concatenated with "_". Defaults to <code>c(1, 2)</code>, i.e. a
+concatenation of the first two columns.</dd>
       <dt>nNodes</dt>
-      <dd>The number of nodes to create.</dd>
+      <dd>The number of nodes to create. Auto-detect if <code>NULL</code>. Defaults
+to <code>NULL</code>.</dd>
       <dt>linked.by</dt>
       <dd>If <code>columns</code> a column-linked matrix
-(<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>) is created,
-if <code>rows</code> a row-linked matrix
-(<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/RowLinkedMatrix-class'>RowLinkedMatrix</a></code>).</dd>
+(<a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a>) is created, if <code>rows</code> a
+row-linked matrix (<a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/RowLinkedMatrix-class'>LinkedMatrix::RowLinkedMatrix</a>). Defaults to
+<code>rows</code>.</dd>
       <dt>folderOut</dt>
-      <dd>The path to the folder where to save the binary files.</dd>
+      <dd>The path to the folder where to save the binary files.
+Defaults to the name of the input file (<code>fileIn</code>) without extension prefixed
+with "BGData_".</dd>
+      <dt>outputType</dt>
+      <dd>The <code>vmode</code> for <code>ff</code> and <code>type</code> for
+<a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a>) objects. Default to <code>byte</code> for <code>ff</code> and
+<code>char</code> for <a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a> objects.</dd>
       <dt>dimorder</dt>
-      <dd>The physical layout of the underlying <code>ff</code> object of
-each node.</dd>
+      <dd>The physical layout of the underlying <code>ff</code> object of each
+node.</dd>
+      <dt>verbose</dt>
+      <dd>Whether progress updates will be posted. Defaults to <code>FALSE</code>.</dd>
     </dl>
     
     <div class="Description">
       <h2>Description</h2>
 
-      <p><code>readPED</code> assumes that the plaintext file (<code>fileIn</code>) contains
-records of individuals in rows, and phenotypes, covariates and markers in
-columns. The columns included in the first couple of columns
-(<code>seq_len(nColSkip)</code>) are used to populate the <code>@pheno</code> slot of a
-<code><a href='BGData-class.html'>BGData</a></code> object, and the remaining columns are
-used to fill the <code>@geno</code> slot. If the first row contains a header
-(<code>header=TRUE</code>), data in this row is used to determine variables names
-for <code>@pheno</code> and marker names for <code>@map</code> and <code>@geno</code>.</p>
+      <p>Creates a BGData object from a raw PED file (generated with
+<code>--recodeA</code> in <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/'>PLINK</a>). Other
+text-based file formats are supported as well by tweaking some of the
+parameters as long as the records of individuals are in rows, and
+phenotypes, covariates and markers are in columns.</p>
   
     </div>
 
     <div class="Details">
       <h2>Details</h2>
 
-      <p>Genotypes are stored in a <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>
-object where each node is an <code>ff</code> instance rather than a single
-<code>ff</code> object. This is because the array size in <code>ff</code> is limited to
-the largest integer which can be represented on the system
-(<code>.Machine$integer.max</code>) and for genetic data this limitation is often
-exceeded. The <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code> package makes
-it possible to link several <code>ff</code> files together by columns or by rows
-and treat them similarly to a single matrix. By default a
-<code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code> is used for
-<code>@geno</code>, but the user can modify this using the <code>linked.by</code>
-argument. The number of nodes to generate is either specified by the user
-using the <code>nNodes</code> argument or determined internally so that each
-<code>ff</code> object has a number of cells that is smaller than
-<code>.Machine$integer.max / 1.2</code>.</p>
+      <p>The data included in the first couple of columns (up to <code>nColSkip</code>) is used
+to populate the <code>@pheno</code> slot of a BGData object, and the remaining
+columns are used to fill the <code>@geno</code> slot. If the first row contains a
+header (<code>header = TRUE</code>), data in this row is used to determine the column
+names for <code>@pheno</code> and <code>@geno</code>.</p>
   
-      <p><code>readPED</code> creates a folder (see <code>folderOut</code>) that contains the
-binary flat files (named <code>geno_*.bin</code>) and an external representation of
-the <code><a href='BGData-class.html'>BGData</a></code> object in <code>BGData.RData</code>. A
-<code><a href='BGData-class.html'>BGData</a></code> object can be reloaded using
-<code>load.BGData</code> (the regular <code>load</code> function will only work if the
-working directory is set to the path that contains the binary flat files).</p>
+      <p><code>@geno</code> can take several forms, depending on the function that is called
+(<code>readPED</code>, <code>readPED.matrix</code>, or <code>readPED.big.matrix</code>). The following
+sections illustrate each function in detail.</p>
+  
+    </div>
+
+    <div class="readPED">
+      <h2>readPED</h2>
+
+      <p></p>
+  
+      <p>Genotypes are stored in a <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix::LinkedMatrix</a> object where
+each node is an <code>ff</code> instance. Multiple <code>ff</code> files are used because the
+array size in <code>ff</code> is limited to the largest integer which can be
+represented on the system (<code>.Machine$integer.max</code>) and for genetic data this
+limitation is often exceeded. The <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix::LinkedMatrix</a> package
+makes it possible to link several <code>ff</code> files together by columns or by rows
+and treat them similarly to a single matrix. By default a
+<a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a> is used for <code>@geno</code>, but the user
+can modify this using the <code>linked.by</code> argument. The number of nodes to
+generate is either specified by the user using the <code>nNodes</code> argument or
+determined internally so that each <code>ff</code> object has a number of cells that is
+smaller than <code>.Machine$integer.max / 1.2</code>. A folder (see <code>folderOut</code>) that
+contains the binary flat files (named <code>geno_*.bin</code>) and an external
+representation of the BGData object in <code>BGData.RData</code> is created.</p>
+  
+    </div>
+
+    <div class="readPED.matrix">
+      <h2>readPED.matrix</h2>
+
+      <p></p>
+  
+      <p>Genotypes are stored in a regular <code>matrix</code> object. Therefore, this function
+will only work if the raw PED file is small enough to fit into memory.</p>
+  
+    </div>
+
+    <div class="readPED.big.matrix">
+      <h2>readPED.big.matrix</h2>
+
+      <p></p>
+  
+      <p>Genotypes are stored in a filebacked <a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a> object.
+A folder (see <code>folderOut</code>) that contains the binary flat file (named
+<code>BGData.bin</code>), a descriptor file (named <code>BGData.desc</code>), and an external
+representation of the BGData object in <code>BGData.RData</code> are created.</p>
+  
+    </div>
+
+    <div class="Reloading a BGData object">
+      <h2>Reloading a BGData object</h2>
+
+      <p></p>
+  
+      <p>To reload a BGData object, it is recommended to use the
+<code><a href='load.BGData.html'>load.BGData()</a></code> function instead of the <code><a href='http://www.inside-r.org/r-doc/base/load'>base::load()</a></code> function as
+<code><a href='http://www.inside-r.org/r-doc/base/load'>base::load()</a></code> does not initialize <code>ff</code> objects or attach
+<a href='http://www.inside-r.org/packages/cran/bigmemory/docs/big.matrix-class'>bigmemory::big.matrix</a> objects.</p>
   
     </div>
       </div>
   <div class="span4">
     <!-- <ul>
-      <li>readPED</li>
+      <li>readPED</li><li>readPED.matrix</li><li>readPED.big.matrix</li>
     </ul>
     <ul>
       
@@ -153,10 +203,9 @@ working directory is set to the path that contains the binary flat files).</p>
       
     <h2>See also</h2>
     
-<code><a href='BGData-class.html'>BGData</a></code>,
-  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix</a></code>,
-  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>ColumnLinkedMatrix</a></code>,
-  <code><a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/RowLinkedMatrix-class'>RowLinkedMatrix</a></code>, <code><a href='http://www.inside-r.org/packages/cran/ff/docs/ff'>ff</a></code>
+<code><a href='load.BGData.html'>load.BGData()</a></code> to load a previously saved BGData object,
+<code><a href='as.BGData.html'>as.BGData()</a></code> to create BGData objects from non-text files (e.g. BED
+files).
 
         
   </div>
