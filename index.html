@@ -300,6 +300,10 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
 <pre><code>G &lt;- getG(bgd@geno)
 </code></pre>
 
+<h2>Example Dataset</h2>
+
+<p>The example dataset in the <code>inst/extdata</code> folder was generated from the 250k SNP and phenotype data in <a href="http://www.nature.com/nature/journal/v465/n7298/full/nature08800.html">Atwell et al. (2010)</a>. Only the first 300 SNPs of chromosome 1, 2, and 3 were included to keep the size of the example dataset small. <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/">PLINK</a> was used to convert the data to BED and RAW files. <code>FT10</code> has been chosen as a phenotype and is provided as an <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#pheno">alternate phenotype file</a>. The file is intentionally shuffled to demonstrate that the additional phenotypes are put in the same order as the rest of the phenotypes.</p>
+
 
     <h2>Help topics</h2>
 
@@ -326,10 +330,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
 
     
     <ul class="index">
-        
-      <li>
-        <code><a href="as.BGData.BEDMatrix.html">as.BGData.BEDMatrix</a></code><br />Converts Other Objects to BGData Objects.</li>
-    
+
     </ul>
     <h3>Creating a BGData object from a previously saved BGData object</h3>
     
@@ -379,7 +380,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
     <ul class="index">
         
       <li>
-        <code><a href="as.BGData.html">as.BGData</a></code><br />Convert Other Objects to BGData Objects.</li>
+        <code><a href="as.BGData.html">as.BGData</a></code>(as.BGData.BEDMatrix, as.BGData.ColumnLinkedMatrix)<br />Convert Other Objects to BGData Objects.</li>
             
       <li>
         <code><a href="BGData-package.html">BGData-package</a></code><br />BGData: Memory Mapped Matrices and Data-Structures for Genomic Data for R</li>

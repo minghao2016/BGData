@@ -52,14 +52,21 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>as.BGData(x, ...)</div></pre>
+    <pre><div>as.BGData(x, alternatePhenotypeFile&nbsp;=&nbsp;NULL, ...)</div>
+<div>"as.BGData"(x, alternatePhenotypeFile&nbsp;=&nbsp;NULL, ...)</div>
+<div>"as.BGData"(x, alternatePhenotypeFile&nbsp;=&nbsp;NULL, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>x</dt>
-      <dd>An object.</dd>
+      <dd>An object. Currently supported are <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects,
+plain or nested in <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a> objects.</dd>
+      <dt>alternatePhenotypeFile</dt>
+      <dd>Path to an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>.</dd>
       <dt>...</dt>
-      <dd>Additional arguments (see method).</dd>
+      <dd>Additional arguments to the <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>utils::read.table()</a></code> or
+<code><a href='http://www.inside-r.org/packages/cran/data.table/docs/fread'>data.table::fread()</a></code> call (if data.table package is installed) call to
+parse the alternate pheno file.</dd>
     </dl>
     
     <div class="Value">
@@ -74,13 +81,40 @@ A BGData object.
     <div class="Description">
       <h2>Description</h2>
 
-      <p>Convert Other Objects to BGData Objects.</p>
+      <p>Converts other objects to BGData objects by loading supplementary
+phenotypes and map files referenced by the object to be used for the
+<code>@pheno</code> and <code>@map</code> slot, respectively. Currently supported are
+<a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects, plain or nested in
+<a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a> objects.</p>
+  
+    </div>
+
+    <div class="Details">
+      <h2>Details</h2>
+
+      <p>The PED format only allows for a single phenotype. If more phenotypes are
+required it is possible to store them in an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>. The path
+to such a file can be provided with <code>alternatePhenotypeFile</code> and will be
+merged with the data in the <code>@pheno</code> slot.</p>
+  
+      <p>For <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects: If a FAM file (which corresponds to the
+first six columns of a PED file) of the same name and in the same directory
+as the BED file exists, the <code>@pheno</code> slot will be populated with the data
+stored in that file.  Otherwise a stub that only contains an <code>IID</code> column
+populated with the rownames of <code>@geno</code> will be generated. The same will
+happen for a BIM file for the <code>@map</code> slot.</p>
+  
+      <p>For <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a> objects: See the case for
+<a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects, but only the FAM file of the first node of
+the <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/LinkedMatrix-class'>LinkedMatrix::LinkedMatrix</a> will be read and used for the
+<code>@pheno</code> slot, and the BIM files of all nodes will be combined and used for
+the <code>@map</code> slot.</p>
   
     </div>
       </div>
   <div class="span4">
     <!-- <ul>
-      <li>as.BGData</li>
+      <li>as.BGData</li><li>as.BGData.BEDMatrix</li><li>as.BGData.ColumnLinkedMatrix</li>
     </ul>
     <ul>
       
@@ -88,8 +122,7 @@ A BGData object.
       
     <h2>See also</h2>
     
-<code><a href='as.BGData.BEDMatrix.html'>as.BGData.BEDMatrix()</a></code> to convert <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects
-to BGData.
+<code><a href='readPED.html'>readPED()</a></code> to convert text files to BGData objects.
 
         
   </div>
