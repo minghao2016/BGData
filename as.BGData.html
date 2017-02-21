@@ -62,7 +62,7 @@
       <dd>An object. Currently supported are <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects,
 plain or nested in <a href='http://www.inside-r.org/packages/cran/LinkedMatrix/docs/ColumnLinkedMatrix-class'>LinkedMatrix::ColumnLinkedMatrix</a> objects.</dd>
       <dt>alternatePhenotypeFile</dt>
-      <dd>Path to an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>.</dd>
+      <dd>Path to an <a href = 'https://www.cog-genomics.org/plink2/input#pheno'>alternate phenotypefile</a>.</dd>
       <dt>...</dt>
       <dd>Additional arguments to the <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>utils::read.table()</a></code> or
 <code><a href='http://www.inside-r.org/packages/cran/data.table/docs/fread'>data.table::fread()</a></code> call (if data.table package is installed) call to
@@ -93,9 +93,9 @@ phenotypes and map files referenced by the object to be used for the
       <h2>Details</h2>
 
       <p>The PED format only allows for a single phenotype. If more phenotypes are
-required it is possible to store them in an <a href = 'http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#pheno'>alternate phenotypefile</a>. The path
-to such a file can be provided with <code>alternatePhenotypeFile</code> and will be
-merged with the data in the <code>@pheno</code> slot.</p>
+required it is possible to store them in an <a href = 'https://www.cog-genomics.org/plink2/input#pheno'>alternate phenotypefile</a>. The path to such a
+file can be provided with <code>alternatePhenotypeFile</code> and will be merged with
+the data in the <code>@pheno</code> slot.</p>
   
       <p>For <a href='http://www.inside-r.org/packages/cran/BEDMatrix/docs/BEDMatrix'>BEDMatrix::BEDMatrix</a> objects: If a FAM file (which corresponds to the
 first six columns of a PED file) of the same name and in the same directory

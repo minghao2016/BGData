@@ -85,7 +85,7 @@ devtools::install_github(&quot;QuantGen/BGData&quot;)
 
 <h3>Creating a BGData object from a PLINK BED file</h3>
 
-<p>This example uses a <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#bed">BED version</a> of the <code>mice</code> dataset that is included in the BGLR package. See the <a href="https://gist.github.com/agrueneberg/812564cbe860db4ee864d019be940aaf">mice.bed gist</a> for instructions on how it was generated.</p>
+<p>This example uses a <a href="https://www.cog-genomics.org/plink2/formats#bed">BED version</a> of the <code>mice</code> dataset that is included in the BGLR package. See the <a href="https://gist.github.com/agrueneberg/812564cbe860db4ee864d019be940aaf">mice.bed gist</a> for instructions on how it was generated.</p>
 
 <p>Load the BGData package:</p>
 
@@ -162,7 +162,7 @@ Formal class &quot;BGData&quot; [package &quot;BGData&quot;] with 3 slots
 <pre><code>&gt; library(BGData)
 </code></pre>
 
-<p>A <code>BGData</code> object can be generated from any plaintext file that stores individuals in rows, phenotypes in the first couple of columns (including an identifier for each individual), and genotypes as single allele dosage numbers in the remaining columns. This structure is intentionally similar to a <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#ped">PED file</a> that further restricts the structure of the phenotype section. The <code>mice</code> dataset that we will use as an example is only PED-like: there are more than six initial columns and the order of the columns is not according to the specification, but the BGData package is flexible enough to read it thanks to the <code>nColSkip</code> and <code>idCol</code> parameters.</p>
+<p>A <code>BGData</code> object can be generated from any plaintext file that stores individuals in rows, phenotypes in the first couple of columns (including an identifier for each individual), and genotypes as single allele dosage numbers in the remaining columns. This structure is intentionally similar to a <a href="https://www.cog-genomics.org/plink2/formats#ped">PED file</a> that further restricts the structure of the phenotype section. The <code>mice</code> dataset that we will use as an example is only PED-like: there are more than six initial columns and the order of the columns is not according to the specification, but the BGData package is flexible enough to read it thanks to the <code>nColSkip</code> and <code>idCol</code> parameters.</p>
 
 <pre><code>&gt; bgd &lt;- readPED(fileIn = &quot;mice.raw.gz&quot;, header = TRUE, dataType = integer(), nColSkip = 17, idCol = 1)
 </code></pre>
@@ -302,7 +302,7 @@ fmSKAT &lt;- GWAS(formula = Obesity.BMI ~ GENDER + Litter, data = bgd, method = 
 
 <h2>Example Dataset</h2>
 
-<p>The example dataset in the <code>inst/extdata</code> folder was generated from the 250k SNP and phenotype data in <a href="http://www.nature.com/nature/journal/v465/n7298/full/nature08800.html">Atwell et al. (2010)</a>. Only the first 300 SNPs of chromosome 1, 2, and 3 were included to keep the size of the example dataset small. <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/">PLINK</a> was used to convert the data to BED and RAW files. <code>FT10</code> has been chosen as a phenotype and is provided as an <a href="http://pngu.mgh.harvard.edu/%7Epurcell/plink/data.shtml#pheno">alternate phenotype file</a>. The file is intentionally shuffled to demonstrate that the additional phenotypes are put in the same order as the rest of the phenotypes.</p>
+<p>The example dataset in the <code>inst/extdata</code> folder was generated from the 250k SNP and phenotype data in <a href="http://www.nature.com/nature/journal/v465/n7298/full/nature08800.html">Atwell et al. (2010)</a>. Only the first 300 SNPs of chromosome 1, 2, and 3 were included to keep the size of the example dataset small. <a href="https://www.cog-genomics.org/plink2">PLINK</a> was used to convert the data to BED and RAW files. <code>FT10</code> has been chosen as a phenotype and is provided as an <a href="https://www.cog-genomics.org/plink2/input#pheno">alternate phenotype file</a>. The file is intentionally shuffled to demonstrate that the additional phenotypes are put in the same order as the rest of the phenotypes.</p>
 
 
     <h2>Help topics</h2>
