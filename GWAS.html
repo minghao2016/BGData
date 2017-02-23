@@ -52,15 +52,14 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>GWAS(formula, data, method&nbsp;=&nbsp;"lsfit", i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
+    <pre><div>GWAS(formula, data, method&nbsp;=&nbsp;"lsfit", i&nbsp;=&nbsp;seq_len(nrow(data@geno)), j&nbsp;=&nbsp;seq_len(ncol(data@geno)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
       <dt>formula</dt>
-      <dd>A formula (e.g. weight~sex+age) with the response on the
-left-hand side and predictors (all the covariates except the markers) on the
-right-hand side. The variables included in the formula must be in the
-<code>@pheno</code> object of the BGData.</dd>
+      <dd>The formula for the GWAS model without including the marker,
+e.g. <code>y ~ 1</code> or <code>y ~ factor(sex) + age</code>. The variables included in the
+formula must be in the <code>@pheno</code> object of the BGData.</dd>
       <dt>data</dt>
       <dd>A BGData object.</dd>
       <dt>method</dt>
@@ -97,7 +96,7 @@ Defaults to the number of cores as detected by <code><a href='http://www.inside-
       <h2>Value</h2>
 
       <p><dl>
-A matrix with estimates, SE, p-value, etc.
+The same matrix that would be returned by <code>coef(summary(model))</code>.
 </dl></p>
   
     </div>

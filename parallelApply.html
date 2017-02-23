@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>parallelApply(X, MARGIN, FUN, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), ...)</div></pre>
+    <pre><div>parallelApply(X, MARGIN, FUN, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>

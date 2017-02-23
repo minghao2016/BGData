@@ -52,8 +52,8 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>crossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores())</div>
-<div>tcrossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores())</div></pre>
+    <pre><div>crossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L))</div>
+<div>tcrossprod_parallel(x, y&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L))</div></pre>
     
     <h2>Arguments</h2>
     <dl>

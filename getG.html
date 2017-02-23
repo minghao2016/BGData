@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG(X, center&nbsp;=&nbsp;TRUE, scale&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, minVar&nbsp;=&nbsp;1e-05, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), i2&nbsp;=&nbsp;NULL, bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;TRUE)</div></pre>
+    <pre><div>getG(X, center&nbsp;=&nbsp;TRUE, scale&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, minVar&nbsp;=&nbsp;1e-05, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), i2&nbsp;=&nbsp;NULL, bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), verbose&nbsp;=&nbsp;TRUE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>

@@ -53,7 +53,7 @@ by Creating a symDMatrix.</h1>
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>getG.symDMatrix(X, nBlocks&nbsp;=&nbsp;5, blockSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, folderOut&nbsp;=&nbsp;paste0("symDMatrix_", randomString()), vmode&nbsp;=&nbsp;"double", saveRData&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;TRUE)</div></pre>
+    <pre><div>getG.symDMatrix(X, nBlocks&nbsp;=&nbsp;5, blockSize&nbsp;=&nbsp;NULL, centers&nbsp;=&nbsp;NULL, scales&nbsp;=&nbsp;NULL, centerCol&nbsp;=&nbsp;TRUE, scaleCol&nbsp;=&nbsp;TRUE, scaleG&nbsp;=&nbsp;TRUE, folderOut&nbsp;=&nbsp;paste0("symDMatrix_", randomString()), vmode&nbsp;=&nbsp;"double", saveRData&nbsp;=&nbsp;TRUE, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), verbose&nbsp;=&nbsp;TRUE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>

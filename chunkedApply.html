@@ -53,7 +53,7 @@ Function on Each Row or Column of a Matrix in Parallel.</h1>
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>chunkedApply(X, MARGIN, FUN, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
+    <pre><div>chunkedApply(X, MARGIN, FUN, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nBuffers&nbsp;=&nbsp;NULL, nTasks&nbsp;=&nbsp;nCores, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), verbose&nbsp;=&nbsp;FALSE, ...)</div></pre>
     
     <h2>Arguments</h2>
     <dl>

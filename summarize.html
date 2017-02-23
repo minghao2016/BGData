@@ -52,7 +52,7 @@
 <div class="row">
   <div class="span8">
     <h2>Usage</h2>
-    <pre><div>summarize(X, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;nCores, nBuffers&nbsp;=&nbsp;NULL, nCores&nbsp;=&nbsp;parallel::detectCores(), verbose&nbsp;=&nbsp;FALSE)</div></pre>
+    <pre><div>summarize(X, i&nbsp;=&nbsp;seq_len(nrow(X)), j&nbsp;=&nbsp;seq_len(ncol(X)), bufferSize&nbsp;=&nbsp;5000, nTasks&nbsp;=&nbsp;nCores, nBuffers&nbsp;=&nbsp;NULL, nCores&nbsp;=&nbsp;getOption("mc.cores", 2L), verbose&nbsp;=&nbsp;FALSE)</div></pre>
     
     <h2>Arguments</h2>
     <dl>
